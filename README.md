@@ -1,3 +1,7 @@
-# diojvi-arch-config-hyprland
-this my config for hyprland session in arch linux
-Using nano for edit config files and sddm for lock session manager
+
+# ¡Onix Hyprdots!
+
+Estos son los Dotfiles de Hyprland para poder la personalización y entorno que Onix en Arch!
+
+(es totalmente valido para otros sistemas unix, mas sin embargo todo esto esta optimizado y pensado para ser contruido en Arch)
+
