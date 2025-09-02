@@ -2,12 +2,6 @@
 # Onix Hyprdots
 
 <p align="center">
-  <img src="assets/onix-logo.svg" alt="Onix Logo" width="250">
-  
-  <a href="https://hyprland.org/" target="_blank">
-    <img src="https://raw.githubusercontent.com/hyprwm/Hyprland/main/assets/header.svg" width="200" alt="Hyprland Logo">
-  </a>
-
 </p>
 
 <p align="center">
