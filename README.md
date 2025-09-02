@@ -3,7 +3,7 @@
 
 <p align="center">
   <a href="https://hyprland.org/" target="_blank">
-    <img src="https://raw.githubusercontent.com/hyprland-community/hyprland-logo/main/logo/hyprland-logo-gradient.svg" width="150" alt="Hyprland Logo">
+    <img src="https://raw.githubusercontent.com/hyprwm/Hyprland/main/assets/header.svg" width="200" alt="Hyprland Logo">
   </a>
   <br><br>
   <img src="assets/onix-logo.svg" alt="Onix Logo" width="120">
