@@ -2,6 +2,15 @@
 # Onix Hyprdots
 
 <p align="center">
+  <a href="https://hyprland.org/" target="_blank">
+    <img src="https://raw.githubusercontent.com/hyprland-community/hyprland-logo/main/logo/hyprland-logo-gradient.svg" width="150" alt="Hyprland Logo">
+  </a>
+  <br><br>
+  <img src="assets/onix-logo.svg" alt="Onix Logo" width="120">
+  <br><br>
+  <a href="https://archlinux.org/" target="_blank">
+    <img src="https://archlinux.org/static/logos/archlinux-logo-dark-90x90.f1cfa59b3a20.png" width="90" alt="Arch Linux Logo">
+  </a>
 </p>
 
 <p align="center">
