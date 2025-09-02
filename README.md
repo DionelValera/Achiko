@@ -32,7 +32,11 @@
 ¡Una imagen vale más que mil palabras! Aquí puedes ver Onix Hyprdots en acción.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/gist/DionelValera/f9499638b73f9352c64f73c5a4aad7a1/raw/onix_placeholder.png" alt="Onix Hyprdots Placeholder" width="600">
+  <i>(Aquí irán las capturas de pantalla del escritorio, terminal, aplicaciones, etc.)</i>
+  <br>
+  <b>[¡Próximamente capturas de pantalla!]</b>
+  <!-- <img src="https://raw.githubusercontent.com/gist/DionelValera/f9499638b73f9352c64f73c5a4aad7a1/raw/onix_placeholder.png" alt="Onix Hyprdots Placeholder" width="600"> -->
+
 </p>
 
 ## 🚀 Características Principales
