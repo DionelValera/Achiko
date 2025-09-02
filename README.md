@@ -6,15 +6,6 @@
   <a href="https://archlinux.org/" target="_blank">
     <img src="https://archlinux.org/static/logos/archlinux-logo-dark-90dpi.png" width="200" alt="Arch Linux Logo">
   </a>
-  <svg width="250" height="80" viewBox="0 0 250 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" style="stop-color:#7e57c2;stop-opacity:1" />
-        <stop offset="100%" style="stop-color:#42a5f5;stop-opacity:1" />
-      </linearGradient>
-    </defs>
-    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="'JetBrains Mono', 'Fira Code', monospace, sans-serif" font-size="60" font-weight="bold" fill="url(#gradient)">Onix</text>
-  </svg>
   <a href="https://hyprland.org/" target="_blank">
     <img src="https://raw.githubusercontent.com/hyprwm/Hyprland/main/assets/header.svg" width="200" alt="Hyprland Logo">
   </a>
