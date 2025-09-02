@@ -15,6 +15,7 @@
 </p>
 
 **Onix Hyprdots** es mi visión personal de un entorno de escritorio perfecto con Hyprland. Nacido de la pasión por la personalización y la eficiencia, este proyecto busca ofrecer una experiencia de usuario cohesiva, moderna y altamente adaptable. Aunque está optimizado para Arch Linux, los principios y scripts son portables a otros sistemas Unix-like.
+
 ---
 
 ## ✨ Galería
