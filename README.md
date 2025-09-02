@@ -2,14 +2,15 @@
 # Onix Hyprdots
 
 <p align="center">
-.  
-  <a href="https://archlinux.org/" target="_blank">
-    <img src="https://archlinux.org/static/logos/archlinux-logo-dark-90dpi.png" width="200" alt="Arch Linux Logo">
-  </a>
   <a href="https://hyprland.org/" target="_blank">
-    <img src="https://raw.githubusercontent.com/hyprwm/Hyprland/main/assets/header.svg" width="200" alt="Hyprland Logo">
+    <img src="https://raw.githubusercontent.com/hyprland-community/hyprland-logo/main/logo/hyprland-logo-gradient.svg" width="150" alt="Hyprland Logo">
   </a>
-  
+  <br>
+  <img src="assets/onix-logo.svg" alt="Onix Logo" width="250">
+  <br>
+  <a href="https://archlinux.org/" target="_blank">
+    <img src="https://archlinux.org/static/logos/archlinux-logo-dark-90x90.f1cfa59b3a20.png" width="90" alt="Arch Linux Logo">
+  </a>
 </p>
 
 <p align="center">
@@ -24,7 +25,7 @@
 
 ---
 
-**Onix Hyprdots** es mi visión personal de un entorno de escritorio perfecto con Hyprland. Nacido de la pasión por la personalización y la eficiencia, este proyecto busca ofrecer una experiencia de usuario cohesiva, moderna y altamente adaptable. Aunque está optimizado para Arch Linux, los principios y scripts son portables a otros sistemas linux.
+**Onix Hyprdots** es mi visión personal de un entorno de escritorio perfecto con Hyprland. Nacido de la pasión por la personalización y la eficiencia, este proyecto busca ofrecer una experiencia de usuario cohesiva, moderna y altamente adaptable. Aunque está optimizado para Arch Linux, los principios y scripts son portables a otros sistemas Unix-like.
 
 ## ✨ Galería
 
@@ -54,13 +55,13 @@ Empezar con Onix es sencillo. Se recomienda una instalación limpia de Arch Linu
 
 1.  **Clona el repositorio:**
     ```bash
-    git clone https://github.com/tu_usuario/Onix-hyprdots.git # Reemplaza con la URL real
+    git clone https://github.com/DionelValera/Onix-hyprdots.git
     cd Onix-hyprdots
     ```
 
 2.  **Sigue la guía manual:**
-    Para una instalación paso a paso y detallada, consulta la guía completa que ya has preparado:
-    ➡️ **Guía de Instalación y Configuración**
+    Para una instalación paso a paso y detallada, consulta la guía completa:
+    ➡️ **[Guía de Instalación y Configuración](indispensables.md)**
 
 ## 🌱 Sobre el Proyecto y Contribuciones
 
