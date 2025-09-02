@@ -3,7 +3,7 @@
 
 <p align="center">
 <a href="https://archlinux.org/" target="_blank">
-    <img src="https://archlinux.org/static/logos/archlinux-logo-dark-90dpi.png" width="200" alt="Arch Linux Logo">
+    <img src="https://www.clipartmax.com/png/middle/131-1311608_arch-linux-arch-linux-logo-png.png" width="200" alt="Arch Linux Logo">
   </a>
 
   <img src="assets/onix-logo.svg" alt="Onix Logo" width="250">
