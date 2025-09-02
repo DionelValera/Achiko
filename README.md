@@ -2,15 +2,16 @@
 # Onix Hyprdots
 
 <p align="center">
+<a href="https://archlinux.org/" target="_blank">
+    <img src="https://archlinux.org/static/logos/archlinux-logo-dark-90dpi.png" width="200" alt="Arch Linux Logo">
+  </a>
+
+  <img src="assets/onix-logo.svg" alt="Onix Logo" width="250">
+  
   <a href="https://hyprland.org/" target="_blank">
     <img src="https://raw.githubusercontent.com/hyprwm/Hyprland/main/assets/header.svg" width="200" alt="Hyprland Logo">
   </a>
-  <br>
-  <img src="assets/onix-logo.svg" alt="Onix Logo" width="250">
-  <br>
-  <a href="https://archlinux.org/" target="_blank">
-    <img src="https://archlinux.org/static/logos/archlinux-logo-dark-90dpi.png" width="200" alt="Arch Linux Logo">
-  </a>
+
 </p>
 
 <p align="center">
