@@ -25,7 +25,7 @@
   </svg>
   <br>
   <a href="https://archlinux.org/" target="_blank">
-    <img src="https://archlinux.org/static/logos/archlinux-logo-dark-90dpi.png" width="90" alt="Arch Linux Logo">
+    <img src="https://archlinux.org/static/logos/archlinux-logo-dark-90dpi.png" width="150" alt="Arch Linux Logo">
   </a>
 </p>
 
