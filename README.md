@@ -3,13 +3,13 @@
 
 <p align="center">
   <a href="https://hyprland.org/" target="_blank">
-    <img src="https://raw.githubusercontent.com/hyprland-community/hyprland-logo/main/logo/hyprland-logo-gradient.svg" width="150" alt="Hyprland Logo">
+    <img src="https://raw.githubusercontent.com/hyprwm/Hyprland/main/assets/header.svg" width="200" alt="Hyprland Logo">
   </a>
   <br>
   <img src="assets/onix-logo.svg" alt="Onix Logo" width="250">
   <br>
   <a href="https://archlinux.org/" target="_blank">
-    <img src="https://archlinux.org/static/logos/archlinux-logo-dark-90x90.f1cfa59b3a20.png" width="90" alt="Arch Linux Logo">
+    <img src="https://archlinux.org/static/logos/archlinux-logo-dark-90dpi.png" width="200" alt="Arch Linux Logo">
   </a>
 </p>
 
