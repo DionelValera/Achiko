@@ -22,6 +22,8 @@ error() {
 }
 
 confirm_action() {
+    # Si estamos en modo no interactivo, siempre retorna éxito (sí)
+    [[ "$NON_INTERACTIVE" == "true" ]] && return 0
     read -p "$1 [y/N]: " -n 1 -r; echo
     [[ $REPLY =~ ^[Yy]$ ]]
 }
@@ -58,18 +60,18 @@ restore_dotfiles() {
     fi
 
     # 1. Eliminar los enlaces simbólicos creados por el instalador
-    log "Eliminando los enlaces simbólicos de Onix Hyprdots..."
-    local DOTFILES_SOURCE_PATH
-    DOTFILES_SOURCE_PATH=$(pwd)/dotfiles
-
-    cd "$HOME_DIR"
-    find . -maxdepth 1 -type l | while read -r link; do
-        if [[ $(readlink -f "$link") == "$DOTFILES_SOURCE_PATH/"* ]]; then
-            log "  -> Eliminando enlace: $link"
+    log "Buscando y eliminando enlaces simbólicos de Onix Hyprdots..."
+    
+    # Este método es más robusto: busca cualquier enlace simbólico en el home
+    # que apunte a una ruta que contenga 'Onix-hyprdots/dotfiles'.
+    # Funciona incluso si el repositorio fue movido o eliminado.
+    find "$HOME_DIR" -maxdepth 1 -type l | while read -r link; do
+        # readlink -f resuelve la ruta completa del objetivo del enlace
+        if readlink -f "$link" | grep -q "Onix-hyprdots/dotfiles"; then
+            log "  -> Eliminando enlace: $(basename "$link")"
             rm "$link"
         fi
     done
-    cd - > /dev/null
 
     # 2. Restaurar los archivos desde la copia de seguridad
     log "Restaurando archivos desde '$LATEST_BACKUP'..."
@@ -102,13 +104,22 @@ revert_grub_theme() {
 
 # --- Lógica Principal de Ejecución ---
 main() {
+    # Procesar argumentos de línea de comandos
+    NON_INTERACTIVE=false
+    if [[ "$1" == "--noconfirm" ]]; then
+        NON_INTERACTIVE=true
+        log "Ejecutando en modo no interactivo. Se procederá sin confirmación."
+    fi
+
     echo -e "\n\e[1;33m*** ASISTENTE DE DESINSTALACIÓN DE ONIX HYPRDOTS ***\e[0m"
     echo "Este script intentará revertir los cambios de CONFIGURACIÓN realizados en tu sistema."
     echo -e "\e[1;31mNO desinstalará los paquetes de software (pacman, aur, flatpak).\e[0m"
 
-    if ! confirm_action "\n¿Estás seguro de que deseas continuar con la desinstalación?"; then
-        log "Desinstalación cancelada."
-        exit 0
+    if [[ "$NON_INTERACTIVE" == "false" ]]; then
+        if ! confirm_action "\n¿Estás seguro de que deseas continuar con la desinstalación?"; then
+            log "Desinstalación cancelada."
+            exit 0
+        fi
     fi
 
     restore_dotfiles
@@ -118,4 +129,4 @@ main() {
 }
 
 # Ejecutar la función principal
-main
+main "$@"

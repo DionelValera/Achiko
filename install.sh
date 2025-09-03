@@ -53,22 +53,35 @@ update_system() {
 
 install_pacman_packages() {
     log "Instalando paquetes esenciales desde los repositorios oficiales..."
-    pacman -S --noconfirm --needed \
-        hyprland sddm \
-        ark kate dolphin okular gwenview \
-        libreoffice-still libreoffice-still-es \
-        git curl python npm \
-        chromium vivaldi \
-        nautilus gvfs-mtp \
-        vlc fastfetch \
-        flatpak \
-        bluez bluez-utils \
-        qt6-multimedia qt6-virtualkeyboard qt6-svg
+    local packages=(
+        hyprland sddm ark kate dolphin okular gwenview
+        libreoffice-still libreoffice-still-es git curl python npm
+        chromium vivaldi nautilus gvfs-mtp vlc fastfetch flatpak
+        bluez bluez-utils qt6-multimedia qt6-virtualkeyboard qt6-svg
+    )
+    
+    # Filtrar paquetes que ya están instalados
+    local to_install=()
+    for pkg in "${packages[@]}"; do
+        if ! pacman -Q "$pkg" &> /dev/null; then
+            to_install+=("$pkg")
+        fi
+    done
+
+    if [ ${#to_install[@]} -eq 0 ]; then
+        log "Todos los paquetes de Pacman ya están instalados. Omitiendo."
+        return
+    fi
+
+    log "Instalando: ${to_install[*]}"
+    pacman -S --noconfirm --needed "${to_install[@]}"
 }
 
 install_aur_helper() {
+    local SUDO_USER_NAME=${SUDO_USER:?SUDO_USER no está definido. Ejecuta con sudo.}
+
     # Instala 'yay' si no se encuentra 'yay' o 'paru'
-    if command -v yay &> /dev/null || command -v paru &> /dev/null; then
+    if sudo -u "$SUDO_USER_NAME" command -v yay &> /dev/null || sudo -u "$SUDO_USER_NAME" command -v paru &> /dev/null; then
         log "Asistente de AUR (yay/paru) ya está instalado. Omitiendo."
         return
     fi
@@ -77,7 +90,6 @@ install_aur_helper() {
     pacman -S --needed --noconfirm git base-devel
     
     # Es necesario ejecutar makepkg como un usuario normal, no como root.
-    local SUDO_USER_NAME=${SUDO_USER:?SUDO_USER no está definido. Ejecuta con sudo.}
     local YAY_DIR="/tmp/yay-build"
     
     sudo -u "$SUDO_USER_NAME" git clone https://aur.archlinux.org/yay.git "$YAY_DIR"
@@ -89,18 +101,33 @@ install_aur_helper() {
 
 install_aur_packages() {
     local AUR_HELPER
-    if command -v yay &> /dev/null; then AUR_HELPER="yay"; elif command -v paru &> /dev/null; then AUR_HELPER="paru"; else
+    local SUDO_USER_NAME=${SUDO_USER:?SUDO_USER no está definido.}
+
+    if sudo -u "$SUDO_USER_NAME" command -v yay &> /dev/null; then AUR_HELPER="yay"; elif sudo -u "$SUDO_USER_NAME" command -v paru &> /dev/null; then AUR_HELPER="paru"; else
         error "No se encontró un asistente de AUR. No se pueden instalar paquetes de AUR."
     fi
 
     log "Instalando paquetes desde AUR con '$AUR_HELPER'..."
+    local packages=(
+        vscodium-bin vscodium-bin-marketplace speedtest-go
+        waydroid zen-browser-bin
+    )
+
+    local to_install=()
+    for pkg in "${packages[@]}"; do
+        if ! sudo -u "$SUDO_USER_NAME" $AUR_HELPER -Q "$pkg" &> /dev/null; then
+            to_install+=("$pkg")
+        fi
+    done
+
+    if [ ${#to_install[@]} -eq 0 ]; then
+        log "Todos los paquetes de AUR ya están instalados. Omitiendo."
+        return
+    fi
+
     # El asistente de AUR no debe ejecutarse como root.
-    local SUDO_USER_NAME=${SUDO_USER:?SUDO_USER no está definido.}
-    sudo -u "$SUDO_USER_NAME" $AUR_HELPER -S --noconfirm \
-        vscodium-bin vscodium-bin-marketplace \
-        speedtest-go \
-        waydroid \
-        zen-browser-bin
+    log "Instalando: ${to_install[*]}"
+    sudo -u "$SUDO_USER_NAME" $AUR_HELPER -S --noconfirm "${to_install[@]}"
 }
 
 install_flatpak_packages() {
@@ -113,11 +140,6 @@ install_flatpak_packages() {
 
 install_grub_theme() {
     log "Configuración del tema de GRUB"
-
-    if [[ "$NON_INTERACTIVE" == "true" ]]; then
-        log "\e[1;33mModo no interactivo: Omitiendo configuración del tema de GRUB.\e[0m"
-        return
-    fi
 
     local GRUB_SCRIPT_PATH="scripts/install-grub-theme.sh"
 
@@ -132,6 +154,13 @@ install_grub_theme() {
     fi
     
     chmod +x "$GRUB_SCRIPT_PATH"
+
+    if [[ "$NON_INTERACTIVE" == "true" ]]; then
+        log "Modo no interactivo: Instalando tema de GRUB predeterminado (Catppuccin Latte)..."
+        # Llama al script del tema con el nombre del tema predeterminado y el flag noconfirm
+        ./"$GRUB_SCRIPT_PATH" install "catppuccin-latte" --noconfirm
+        return
+    fi
 
     PS3=$'\n\e[1;33m¿Qué deseas hacer con el tema de GRUB? (introduce el número): \e[0m'
     options=(
@@ -173,9 +202,10 @@ copy_dotfiles() {
     sudo -u "$SUDO_USER_NAME" mkdir -p "$BACKUP_DIR"
 
     # Iterar sobre todos los archivos y carpetas en el directorio 'dotfiles'
-    # find . -maxdepth 1 -mindepth 1 -> lista elementos en el dir actual sin incluir '.'
-    cd "$SOURCE_DOTFILES_DIR"
-    find . -maxdepth 1 -mindepth 1 -exec basename {} \; | while read -r item; do
+    # Usamos -print0 y read -d '' para manejar de forma segura nombres con espacios o caracteres especiales.
+    while IFS= read -r -d '' item_path; do
+        local item
+        item=$(basename "$item_path")
         local source_path="$SOURCE_DOTFILES_DIR/$item"
         local dest_path="$HOME_DIR/$item"
 
@@ -190,8 +220,7 @@ copy_dotfiles() {
         # Crear el enlace simbólico
         log "  -> Creando enlace simbólico: $dest_path -> $source_path"
         sudo -u "$SUDO_USER_NAME" ln -s "$source_path" "$dest_path"
-    done
-    cd - > /dev/null # Volver al directorio anterior silenciosamente
+    done < <(find "$SOURCE_DOTFILES_DIR" -maxdepth 1 -mindepth 1 -print0)
     
     log "Gestión de dotfiles completada. Los archivos están en su lugar."
 }

@@ -91,6 +91,7 @@ select_grub_resolution() {
 
 configure_grub() {
     local theme_name="$1"
+    local non_interactive="$2"
     log "Configurando GRUB en '$GRUB_CONFIG_FILE'..."
     local theme_path="$THEMES_DIR/$theme_name/theme.txt"
     local grub_resolution
@@ -102,7 +103,11 @@ configure_grub() {
     # Solo crear backup si no existe uno
     [ ! -f "$GRUB_CONFIG_FILE.bak" ] && cp "$GRUB_CONFIG_FILE" "$GRUB_CONFIG_FILE.bak" && log "Copia de seguridad de la configuración creada en '$GRUB_CONFIG_FILE.bak'"
 
-    grub_resolution=$(select_grub_resolution)
+    if [[ "$non_interactive" == "true" ]]; then
+        grub_resolution=$(detect_resolution)
+    else
+        grub_resolution=$(select_grub_resolution)
+    fi
     log "Estableciendo la resolución de GRUB a: $grub_resolution"
 
     sed -i -E "s|^#*(GRUB_THEME=).*|\1\"$theme_path\"|" "$GRUB_CONFIG_FILE"
@@ -118,6 +123,7 @@ configure_grub() {
 
 install_local_theme() {
     local theme_name="$1"
+    local non_interactive="$2"
     log "Instalando el tema local '$theme_name'..."
 
     local source_dir="$LOCAL_THEMES_PATH/$theme_name"
@@ -132,14 +138,17 @@ install_local_theme() {
     # --no-preserve=ownership evita los warnings de "Operación no permitida".
     cp -a --no-preserve=ownership "$source_dir"/* "$dest_dir/"
 
-    configure_grub "$theme_name"
+    configure_grub "$theme_name" "$non_interactive"
 }
 
 install_catppuccin_theme() {
     log "Iniciando la instalación del tema Catppuccin desde Internet."
 
-    log "Clonando el repositorio del tema..."
-    git clone "$REPO_URL" "$TMP_DIR" --depth 1
+    # Clonar solo si el directorio no existe
+    if [ ! -d "$TMP_DIR" ]; then
+        log "Clonando el repositorio del tema..."
+        git clone "$REPO_URL" "$TMP_DIR" --depth 1
+    fi
 
     PS3=$'\n\e[1;33mPor favor, elige un sabor de Catppuccin (introduce el número): \e[0m'
     options=("latte" "frappe" "macchiato" "mocha" "Cancelar")
@@ -148,7 +157,7 @@ install_catppuccin_theme() {
         case $opt in
             "latte"|"frappe"|"macchiato"|"mocha")
                 selected_flavor_name="catppuccin-$opt-grub-theme"
-                log "Has seleccionado el sabor: $selected_flavor_name"
+                log "Has seleccionado el sabor: $opt"
                 break
                 ;;
             "Cancelar")
@@ -171,6 +180,32 @@ install_catppuccin_theme() {
     cp -a --no-preserve=ownership "$TMP_DIR/src/$selected_flavor_name"/* "$dest_dir/"
 
     configure_grub "$selected_flavor_name"
+}
+
+install_catppuccin_direct() {
+    local flavor="$1" # e.g., "latte"
+    local non_interactive="$2"
+    local selected_flavor_name="catppuccin-$flavor-grub-theme"
+
+    log "Instalando el tema Catppuccin ($flavor) desde Internet en modo no interactivo."
+
+    # Check if repo is already cloned
+    if [ ! -d "$TMP_DIR" ]; then
+        log "Clonando el repositorio del tema..."
+        git clone "$REPO_URL" "$TMP_DIR" --depth 1
+    fi
+
+    if [ ! -d "$TMP_DIR/src/$selected_flavor_name" ]; then
+        error "El sabor '$flavor' no se encontró en el repositorio clonado."
+    fi
+
+    log "Instalando el tema en '$THEMES_DIR'..."
+    local dest_dir="$THEMES_DIR/$selected_flavor_name"
+    rm -rf "$THEMES_DIR/catppuccin-"*
+    mkdir -p "$dest_dir"
+    cp -a --no-preserve=ownership "$TMP_DIR/src/$selected_flavor_name"/* "$dest_dir/"
+
+    configure_grub "$selected_flavor_name" "$non_interactive"
 }
 
 install_theme() {
@@ -273,7 +308,26 @@ trap cleanup EXIT
 
 case "$1" in
     install)
-        install_theme
+        # Si se proporciona un segundo argumento, asumimos que es un nombre de tema para una instalación directa.
+        if [ -n "$2" ]; then
+            local theme_name="$2"
+            local non_interactive=false
+            # El tercer argumento puede ser --noconfirm
+            if [[ "$3" == "--noconfirm" ]]; then
+                non_interactive=true
+            fi
+
+            if [[ "$theme_name" == "catppuccin-"* ]]; then
+                local flavor=${theme_name#catppuccin-} # Extracts "latte" from "catppuccin-latte"
+                install_catppuccin_direct "$flavor" "$non_interactive"
+            elif [ -d "$LOCAL_THEMES_PATH/$theme_name" ]; then
+                install_local_theme "$theme_name" "$non_interactive"
+            else
+                error "Tema '$theme_name' no encontrado localmente ni reconocido como tema Catppuccin."
+            fi
+        else # Si no, mostrar el menú interactivo.
+            install_theme
+        fi
         ;;
     uninstall)
         uninstall_theme

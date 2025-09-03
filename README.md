@@ -64,22 +64,29 @@ git clone https://github.com/DionelValera/Onix-hyprdots.git && cd Onix-hyprdots 
 ```
 > **Nota:** El script te pedirá tu contraseña para ejecutar los comandos que requieren privilegios de administrador (`sudo`). Se recomienda leer el script `install.sh` para entender los cambios que se realizarán en tu sistema.
 
+### Instalación Desatendida
+Para una instalación totalmente automatizada, puedes usar el flag `--noconfirm`. Esto aceptará automáticamente todos los pasos. En este modo, el script instalará el tema de GRUB predeterminado (`Catppuccin Latte`) sin mostrar el menú interactivo.
+```bash
+sudo ./install.sh --noconfirm
+```
+
 ### Instalación Manual
 
 Si prefieres tener un control total sobre cada paso, puedes seguir la guía de instalación manual:
 ➡️ **[Guía de Instalación y Configuración](indispensables.md)**
 
-### 💡 Uso Avanzado y Modular
+### 🗑️ Desinstalación y Uso Modular
 
-El proyecto está diseñado para ser modular. Además del script de instalación principal, algunos scripts individuales, como el del tema de GRUB, pueden ejecutarse de forma independiente para tareas específicas.
+El proyecto está diseñado para ser modular. Además del script de instalación principal, se proporcionan scripts para tareas específicas como la desinstalación.
 
-Por ejemplo, si solo quieres desinstalar el tema de GRUB sin afectar nada más, puedes hacerlo así:
+#### Desinstalación de la Configuración
+
+Se proporciona un script para revertir los cambios de configuración (dotfiles y tema de GRUB). Este script **no** desinstala los paquetes de software. Para una desinstalación automatizada, puedes usar el flag `--noconfirm`.
 
 ```bash
-# Estando dentro del directorio del proyecto (Onix-hyprdots)
-cd scripts
-sudo ./install-grub-theme.sh uninstall
+sudo ./uninstall.sh
 ```
++#### Uso Avanzado de Scripts + +Algunos scripts individuales, como el del tema de GRUB, pueden ejecutarse de forma independiente. Por ejemplo, si solo quieres gestionar el tema de GRUB sin afectar nada más: + +bash +sudo ./scripts/install-grub-theme.sh [install|uninstall] + +
 
 ## 🌱 Sobre el Proyecto y Contribuciones
 
