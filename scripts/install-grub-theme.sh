@@ -70,7 +70,7 @@ install_local_theme() {
 
     mkdir -p "$THEMES_DIR"
     rm -rf "$THEMES_DIR/$theme_name"
-    cp -r "$source_dir" "$THEMES_DIR/"
+    cp -a "$source_dir" "$THEMES_DIR/"
 
     configure_grub "$theme_name"
 }
@@ -106,7 +106,7 @@ install_catppuccin_theme() {
     log "Instalando el tema en '$THEMES_DIR'..."
     mkdir -p "$THEMES_DIR"
     rm -rf "$THEMES_DIR/catppuccin-"*
-    cp -r "$TMP_DIR/src/$selected_flavor_name" "$THEMES_DIR/"
+    cp -a "$TMP_DIR/src/$selected_flavor_name" "$THEMES_DIR/"
 
     configure_grub "$selected_flavor_name"
 }
