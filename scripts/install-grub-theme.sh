@@ -68,9 +68,12 @@ install_local_theme() {
         error "No se encontró el directorio del tema local: $source_dir"
     fi
 
-    mkdir -p "$THEMES_DIR"
-    rm -rf "$THEMES_DIR/$theme_name"
-    cp -a "$source_dir" "$THEMES_DIR/"
+    local dest_dir="$THEMES_DIR/$theme_name"
+    rm -rf "$dest_dir"
+    mkdir -p "$dest_dir"
+    # Copiamos el contenido para ser más robustos y evitar problemas con symlinks.
+    # --no-preserve=ownership evita los warnings de "Operación no permitida".
+    cp -a --no-preserve=ownership "$source_dir"/* "$dest_dir/"
 
     configure_grub "$theme_name"
 }
@@ -104,9 +107,11 @@ install_catppuccin_theme() {
     fi
 
     log "Instalando el tema en '$THEMES_DIR'..."
-    mkdir -p "$THEMES_DIR"
+    local dest_dir="$THEMES_DIR/$selected_flavor_name"
     rm -rf "$THEMES_DIR/catppuccin-"*
-    cp -a "$TMP_DIR/src/$selected_flavor_name" "$THEMES_DIR/"
+    mkdir -p "$dest_dir"
+    # Copiamos el contenido para ser consistentes y robustos.
+    cp -a --no-preserve=ownership "$TMP_DIR/src/$selected_flavor_name"/* "$dest_dir/"
 
     configure_grub "$selected_flavor_name"
 }
