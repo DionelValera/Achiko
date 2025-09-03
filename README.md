@@ -53,7 +53,7 @@ Onix no es solo un conjunto de archivos de configuración; es un ecosistema pens
 
 ## 🔧 Instalación
 
-Empezar con Onix es sencillo. Se recomienda una instalación limpia de Arch Linux.
+Empezar con Onix es sencillo. (¡Se recomienda una instalación limpia de Arch Linux!).
 
 ### Instalación Rápida (Recomendada)
 
