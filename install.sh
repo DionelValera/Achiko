@@ -132,10 +132,31 @@ install_aur_packages() {
 
 install_flatpak_packages() {
     log "Instalando aplicaciones desde Flatpak..."
-    flatpak install flathub --noninteractive --assumeyes \
-        com.github.phase1geo.cohesion \
-        org.gimp.GIMP.Plugin.Fotema \
+    local packages=(
+        com.github.phase1geo.cohesion
+        org.gimp.GIMP.Plugin.Fotema
         info.febvre.Amberol
+    )
+
+    # Obtener una lista de las aplicaciones de Flatpak ya instaladas
+    local installed_flatpaks
+    installed_flatpaks=$(flatpak list --app --columns=application)
+
+    local to_install=()
+    for pkg in "${packages[@]}"; do
+        # Verificar si el paquete no está en la lista de instalados
+        if ! echo "$installed_flatpaks" | grep -q "^$pkg$"; then
+            to_install+=("$pkg")
+        fi
+    done
+
+    if [ ${#to_install[@]} -eq 0 ]; then
+        log "Todas las aplicaciones de Flatpak ya están instaladas. Omitiendo."
+        return
+    fi
+
+    log "Instalando: ${to_install[*]}"
+    flatpak install flathub --noninteractive --assumeyes "${to_install[@]}"
 }
 
 install_grub_theme() {
@@ -150,7 +171,6 @@ install_grub_theme() {
     
     if [ ! -f "$GRUB_SCRIPT_PATH" ]; then
         error "No se encontró el script '$GRUB_SCRIPT_PATH'."
-        return
     fi
     
     chmod +x "$GRUB_SCRIPT_PATH"
