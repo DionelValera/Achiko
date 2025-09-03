@@ -47,7 +47,7 @@ install_theme() {
     select opt in "${options[@]}"; do
         case $opt in
             "latte"|"frappe"|"macchiato"|"mocha")
-                THEME_NAME="catppuccin-$opt"
+                THEME_NAME="catppuccin-$opt-grub-theme"
                 log "Has seleccionado el sabor: $THEME_NAME"
                 break
                 ;;
