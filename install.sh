@@ -105,7 +105,7 @@ install_flatpak_packages() {
 }
 
 install_grub_theme() {
-    log "Iniciando la instalación del tema de GRUB..."
+    log "Configuración del tema de GRUB"
     local GRUB_SCRIPT_PATH="scripts/install-grub-theme.sh"
 
     if ! command -v grub-mkconfig &> /dev/null; then
@@ -118,9 +118,28 @@ install_grub_theme() {
         return
     fi
     
-    log "Otorgando permisos y ejecutando el script del tema de GRUB..."
     chmod +x "$GRUB_SCRIPT_PATH"
-    ./"$GRUB_SCRIPT_PATH"
+
+    PS3=$'\n\e[1;33m¿Qué deseas hacer con el tema de GRUB? (introduce el número): \e[0m'
+    options=(
+        "Instalar el tema Catppuccin de Onix"
+        "Desinstalar tema y restaurar GRUB a su estado anterior/por defecto"
+        "Omitir este paso"
+    )
+    select opt in "${options[@]}"; do
+        case $REPLY in
+            1)
+                ./"$GRUB_SCRIPT_PATH" install
+                break ;;
+            2)
+                ./"$GRUB_SCRIPT_PATH" uninstall
+                break ;;
+            3)
+                log "Omitiendo la configuración del tema de GRUB."
+                break ;;
+            *) echo -e "\e[31mOpción inválida. Inténtalo de nuevo.\e[0m";;
+        esac
+    done
 }
 
 configure_services() {
