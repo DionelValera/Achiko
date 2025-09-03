@@ -74,8 +74,8 @@ install_theme() {
     # Solo crear backup si no existe uno
     [ ! -f "$GRUB_CONFIG_FILE.bak" ] && cp "$GRUB_CONFIG_FILE" "$GRUB_CONFIG_FILE.bak" && log "Copia de seguridad de la configuración creada en '$GRUB_CONFIG_FILE.bak'"
 
-    sed -i -E "s/^#*(GRUB_THEME=).*/\1\"$THEME_PATH\"/" "$GRUB_CONFIG_FILE"
-    sed -i -E "s/^#*(GRUB_GFXMODE=).*/\1$GRUB_RESOLUTION/" "$GRUB_CONFIG_FILE"
+    sed -i -E "s|^#*(GRUB_THEME=).*|\1\"$THEME_PATH\"|" "$GRUB_CONFIG_FILE"
+    sed -i -E "s|^#*(GRUB_GFXMODE=).*|\1$GRUB_RESOLUTION|" "$GRUB_CONFIG_FILE"
 
     # 5. Regenerar la configuración de GRUB
     log "Generando el nuevo archivo de configuración de GRUB..."
