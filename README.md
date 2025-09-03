@@ -86,7 +86,11 @@ Se proporciona un script para revertir los cambios de configuración (dotfiles y
 ```bash
 sudo ./uninstall.sh
 ```
-+#### Uso Avanzado de Scripts + +Algunos scripts individuales, como el del tema de GRUB, pueden ejecutarse de forma independiente. Por ejemplo, si solo quieres gestionar el tema de GRUB sin afectar nada más: + +bash +sudo ./scripts/install-grub-theme.sh [install|uninstall] + +
+#### Uso Avanzado de Scripts 
+ Algunos scripts individuales, como el del tema de GRUB, pueden ejecutarse de forma independiente. Por ejemplo, si solo quieres gestionar el tema de GRUB sin afectar nada más:
+ ```bash
+ sudo ./scripts/install-grub-theme.sh [install|uninstall]
+ ```
 
 ## 🌱 Sobre el Proyecto y Contribuciones
 
