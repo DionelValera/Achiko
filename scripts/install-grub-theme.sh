@@ -35,11 +35,65 @@ cleanup() {
     fi
 }
 
+# Detecta la resolución de la pantalla principal
+detect_resolution() {
+    local resolution
+    if command -v hyprctl &> /dev/null && hyprctl monitors &> /dev/null; then
+        # Para Hyprland, obtiene la resolución del primer monitor
+        resolution=$(hyprctl monitors | grep -oP '^\s*\K[0-9]+x[0-9]+(?=@)' | head -n 1)
+    elif command -v xrandr &> /dev/null; then
+        # Para X11, obtiene la resolución marcada con '*'
+        resolution=$(xrandr | grep '*' | awk '{print $1}' | head -n 1)
+    fi
+
+    if [ -z "$resolution" ]; then
+        log "\e[1;33mADVERTENCIA: No se pudo detectar la resolución. Se usará 1920x1080 como valor por defecto.\e[0m"
+        echo "1920x1080"
+    else
+        echo "$resolution"
+    fi
+}
+
+# Permite al usuario seleccionar la resolución de GRUB
+select_grub_resolution() {
+    PS3=$'\n\e[1;33mPor favor, selecciona la resolución para GRUB (introduce el número): \e[0m'
+    
+    local detected_res
+    detected_res=$(detect_resolution)
+
+    options=(
+        "Auto-detectar (Recomendado: $detected_res)"
+        "1920x1080 (Full HD)"
+        "2560x1080 (Ultrawide HD)"
+        "2560x1440 (2K)"
+        "3440x1440 (Ultrawide 2K)"
+        "3840x2160 (4K)"
+    )
+
+    select opt in "${options[@]}"; do
+        case $opt in
+            "Auto-detectar (Recomendado: $detected_res)")
+                echo "$detected_res"; break ;;
+            "1920x1080 (Full HD)")
+                echo "1920x1080"; break ;;
+            "2560x1080 (Ultrawide HD)")
+                echo "2560x1080"; break ;;
+            "2560x1440 (2K)")
+                echo "2560x1440"; break ;;
+            "3440x1440 (Ultrawide 2K)")
+                echo "3440x1440"; break ;;
+            "3840x2160 (4K)")
+                echo "3840x2160"; break ;;
+            *) echo -e "\e[31mOpción inválida. Inténtalo de nuevo.\e[0m";;
+        esac
+    done
+}
+
 configure_grub() {
     local theme_name="$1"
     log "Configurando GRUB en '$GRUB_CONFIG_FILE'..."
     local theme_path="$THEMES_DIR/$theme_name/theme.txt"
-    local grub_resolution="1920x1080"
+    local grub_resolution
 
     if [ ! -f "$theme_path" ]; then
         error "No se encontró el archivo 'theme.txt' para el tema '$theme_name' en '$theme_path'."
@@ -47,6 +101,9 @@ configure_grub() {
 
     # Solo crear backup si no existe uno
     [ ! -f "$GRUB_CONFIG_FILE.bak" ] && cp "$GRUB_CONFIG_FILE" "$GRUB_CONFIG_FILE.bak" && log "Copia de seguridad de la configuración creada en '$GRUB_CONFIG_FILE.bak'"
+
+    grub_resolution=$(select_grub_resolution)
+    log "Estableciendo la resolución de GRUB a: $grub_resolution"
 
     sed -i -E "s|^#*(GRUB_THEME=).*|\1\"$theme_path\"|" "$GRUB_CONFIG_FILE"
     sed -i -E "s|^#*(GRUB_GFXMODE=).*|\1$grub_resolution|" "$GRUB_CONFIG_FILE"

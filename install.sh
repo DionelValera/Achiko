@@ -122,7 +122,7 @@ install_grub_theme() {
 
     PS3=$'\n\e[1;33m¿Qué deseas hacer con el tema de GRUB? (introduce el número): \e[0m'
     options=(
-        "Instalar el tema Catppuccin de Onix"
+        "Instalar o gestionar un tema para GRUB"
         "Desinstalar tema y restaurar GRUB a su estado anterior/por defecto"
         "Omitir este paso"
     )
