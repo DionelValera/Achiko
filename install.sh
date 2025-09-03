@@ -22,6 +22,13 @@ error() {
     exit 1
 }
 
+confirm_action() {
+    # Si estamos en modo no interactivo, siempre retorna éxito (sí)
+    [[ "$NON_INTERACTIVE" == "true" ]] && return 0
+    read -p "$1 [y/N]: " -n 1 -r; echo
+    [[ $REPLY =~ ^[Yy]$ ]]
+}
+
 # --- Verificaciones Iniciales ---
 log "Iniciando verificaciones del sistema..."
 
@@ -106,6 +113,12 @@ install_flatpak_packages() {
 
 install_grub_theme() {
     log "Configuración del tema de GRUB"
+
+    if [[ "$NON_INTERACTIVE" == "true" ]]; then
+        log "\e[1;33mModo no interactivo: Omitiendo configuración del tema de GRUB.\e[0m"
+        return
+    fi
+
     local GRUB_SCRIPT_PATH="scripts/install-grub-theme.sh"
 
     if ! command -v grub-mkconfig &> /dev/null; then
@@ -143,56 +156,43 @@ install_grub_theme() {
 }
 
 copy_dotfiles() {
-    log "Iniciando la gestión de dotfiles con el método de repositorio 'bare'..."
+    log "Iniciando la gestión de dotfiles con enlaces simbólicos..."
     
     local SUDO_USER_NAME=${SUDO_USER:?SUDO_USER no está definido.}
     local HOME_DIR="/home/$SUDO_USER_NAME"
-    
-    # URL de tu repositorio de dotfiles. ¡Asegúrate de que exista!
-    # Por ahora, usaremos una URL de ejemplo. Reemplázala por la tuya.
-    local DOTFILES_REPO_URL="https://github.com/DionelValera/Onix-hyprdots.git"
-    local DOTFILES_DIR="$HOME_DIR/.dotfiles"
-    local BACKUP_DIR="$HOME_DIR/.dotfiles-backup"
-    
-    # Alias para ejecutar git en nuestro repo bare
-    local CONFIG_ALIAS="/usr/bin/git --git-dir=$DOTFILES_DIR --work-tree=$HOME_DIR"
+    local SOURCE_DOTFILES_DIR
+    SOURCE_DOTFILES_DIR=$(pwd)/dotfiles # Ruta absoluta a la carpeta dotfiles del repo
+    local BACKUP_DIR="$HOME_DIR/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
 
-    log "Clonando el repositorio de dotfiles como 'bare' en '$DOTFILES_DIR'..."
-    # Clonar como el usuario para que sea el propietario
-    sudo -u "$SUDO_USER_NAME" git clone --bare "$DOTFILES_REPO_URL" "$DOTFILES_DIR"
-
-    log "Intentando hacer checkout de los dotfiles..."
-    # Intentamos hacer checkout. Es probable que falle si hay archivos existentes.
-    if sudo -u "$SUDO_USER_NAME" $CONFIG_ALIAS checkout; then
-        log "Checkout de dotfiles completado con éxito en el primer intento."
-    else
-        log "Conflicto detectado. Realizando copia de seguridad de los archivos existentes..."
-        sudo -u "$SUDO_USER_NAME" mkdir -p "$BACKUP_DIR"
-        
-        # Obtenemos la lista de archivos en conflicto y los movemos al backup
-        local CONFLICTING_FILES
-        CONFLICTING_FILES=$(sudo -u "$SUDO_USER_NAME" $CONFIG_ALIAS checkout 2>&1 | grep -E "^\s+" | awk '{print $1}')
-
-        if [ -z "$CONFLICTING_FILES" ]; then
-            error "El checkout falló por una razón desconocida. Revisa los permisos o la salida de git."
-        fi
-
-        log "Archivos en conflicto a respaldar:\n$CONFLICTING_FILES"
-        # Usamos `rsync` para mover los archivos preservando su estructura de directorios
-        echo "$CONFLICTING_FILES" | while read -r file; do
-            # Asegurarse de que el directorio de destino exista en el backup
-            sudo -u "$SUDO_USER_NAME" mkdir -p "$BACKUP_DIR/$(dirname "$file")"
-            # Mover el archivo/directorio al backup
-            sudo -u "$SUDO_USER_NAME" mv "$HOME_DIR/$file" "$BACKUP_DIR/$file"
-        done
-
-        log "Copia de seguridad completada. Reintentando checkout..."
-        # Ahora el checkout debería funcionar
-        sudo -u "$SUDO_USER_NAME" $CONFIG_ALIAS checkout
+    if [ ! -d "$SOURCE_DOTFILES_DIR" ]; then
+        log "\e[1;33mADVERTENCIA: No se encontró el directorio 'dotfiles'. Omitiendo este paso.\e[0m"
+        return
     fi
 
-    # Establecer la configuración para no mostrar archivos no rastreados
-    sudo -u "$SUDO_USER_NAME" $CONFIG_ALIAS config --local status.showUntrackedFiles no
+    log "Creando directorio de respaldo en '$BACKUP_DIR'..."
+    sudo -u "$SUDO_USER_NAME" mkdir -p "$BACKUP_DIR"
+
+    # Iterar sobre todos los archivos y carpetas en el directorio 'dotfiles'
+    # find . -maxdepth 1 -mindepth 1 -> lista elementos en el dir actual sin incluir '.'
+    cd "$SOURCE_DOTFILES_DIR"
+    find . -maxdepth 1 -mindepth 1 -exec basename {} \; | while read -r item; do
+        local source_path="$SOURCE_DOTFILES_DIR/$item"
+        local dest_path="$HOME_DIR/$item"
+
+        log "Procesando '$item'..."
+
+        # Si el archivo/directorio de destino ya existe, moverlo al backup
+        if [ -e "$dest_path" ] || [ -L "$dest_path" ]; then
+            log "  -> Archivo/enlace existente encontrado. Moviendo a la copia de seguridad."
+            sudo -u "$SUDO_USER_NAME" mv "$dest_path" "$BACKUP_DIR/"
+        fi
+
+        # Crear el enlace simbólico
+        log "  -> Creando enlace simbólico: $dest_path -> $source_path"
+        sudo -u "$SUDO_USER_NAME" ln -s "$source_path" "$dest_path"
+    done
+    cd - > /dev/null # Volver al directorio anterior silenciosamente
+    
     log "Gestión de dotfiles completada. Los archivos están en su lugar."
 }
 
@@ -204,17 +204,32 @@ configure_services() {
 
 # --- Lógica Principal de Ejecución ---
 main() {
-    update_system
-    install_pacman_packages
-    install_aur_helper
-    install_aur_packages
-    install_flatpak_packages
+    # Procesar argumentos de línea de comandos
+    NON_INTERACTIVE=false
+    if [[ "$1" == "--noconfirm" ]]; then
+        NON_INTERACTIVE=true
+        log "Ejecutando en modo no interactivo. Se instalará todo sin confirmación."
+    fi
 
-    # Copiar dotfiles antes de configurar servicios que puedan depender de ellos
-    copy_dotfiles
+    if confirm_action "Paso 1: ¿Actualizar el sistema y los repositorios? (Recomendado)"; then
+        update_system
+    fi
+    if confirm_action "Paso 2: ¿Instalar paquetes esenciales de Pacman?"; then
+        install_pacman_packages
+    fi
+    if confirm_action "Paso 3: ¿Instalar asistente de AUR (yay) y paquetes de AUR?"; then
+        install_aur_helper
+        install_aur_packages
+    fi
+    if confirm_action "Paso 4: ¿Instalar aplicaciones de Flatpak?"; then
+        install_flatpak_packages
+    fi
+    if confirm_action "Paso 5: ¿Instalar la configuración de Onix (dotfiles)?"; then
+        copy_dotfiles
+    fi
 
-    install_grub_theme
-    configure_services
+    install_grub_theme # Esta función ya es interactiva y tiene su propia lógica
+    configure_services # Esto no necesita confirmación, es una acción final
 
     log "\e[1;32m¡Instalación de Onix Hyprdots completada!\e[0m"
     echo -e "Se recomienda reiniciar el sistema para aplicar todos los cambios."
@@ -222,4 +237,4 @@ main() {
 }
 
 # Ejecutar la función principal
-main
+main "$@"
