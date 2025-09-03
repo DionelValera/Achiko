@@ -55,22 +55,19 @@ Onix no es solo un conjunto de archivos de configuración; es un ecosistema pens
 
 Empezar con Onix es sencillo. Se recomienda una instalación limpia de Arch Linux.
 
-1.  **Clona el repositorio:**
-    ```bash
-    git clone https://github.com/DionelValera/Onix-hyprdots.git
-    cd Onix-hyprdots
-    ```
+### Instalación Rápida (Recomendada)
 
-2.  **Sigue la guía manual:**
-    Para una instalación completa y automatizada, simplemente ejecuta el script principal. Se recomienda leerlo una vez para entender los pasos que realizará.
-    ```bash
-    chmod +x install.sh
-    sudo ./install.sh
-    ```
+Para una instalación completa y automatizada, simplemente copia y pega el siguiente comando en tu terminal:
 
-3.  **(Opcional) Instalación Manual:**
-    Para una instalación paso a paso y detallada, consulta la guía completa:
-    ➡️ **[Guía de Instalación y Configuración](indispensables.md)**
+```bash
+git clone https://github.com/DionelValera/Onix-hyprdots.git && cd Onix-hyprdots && chmod +x install.sh && sudo ./install.sh
+```
+> **Nota:** El script te pedirá tu contraseña para ejecutar los comandos que requieren privilegios de administrador (`sudo`). Se recomienda leer el script `install.sh` para entender los cambios que se realizarán en tu sistema.
+
+### Instalación Manual
+
+Si prefieres tener un control total sobre cada paso, puedes seguir la guía de instalación manual:
+➡️ **[Guía de Instalación y Configuración](indispensables.md)**
 
 ### 💡 Uso Avanzado y Modular
 
