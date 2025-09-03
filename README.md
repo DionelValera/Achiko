@@ -62,8 +62,25 @@ Empezar con Onix es sencillo. Se recomienda una instalación limpia de Arch Linu
     ```
 
 2.  **Sigue la guía manual:**
+    Para una instalación completa y automatizada, simplemente ejecuta el script principal. Se recomienda leerlo una vez para entender los pasos que realizará.
+    ```bash
+    chmod +x install.sh
+    sudo ./install.sh
+    ```
+
+3.  **(Opcional) Instalación Manual:**
     Para una instalación paso a paso y detallada, consulta la guía completa:
     ➡️ **[Guía de Instalación y Configuración](indispensables.md)**
+
+### 💡 Uso Avanzado y Modular
+
+El proyecto está diseñado para ser modular. Además del script de instalación principal, algunos scripts individuales, como el del tema de GRUB, pueden ejecutarse de forma independiente para tareas específicas.
+
+Por ejemplo, si solo quieres desinstalar el tema de GRUB sin afectar nada más, puedes hacerlo así:
+```bash
+cd Onix-hyprdots/scripts
+sudo ./install-grub-theme.sh uninstall
+```
 
 ## 🌱 Sobre el Proyecto y Contribuciones
 
