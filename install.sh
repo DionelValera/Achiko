@@ -142,6 +142,60 @@ install_grub_theme() {
     done
 }
 
+copy_dotfiles() {
+    log "Iniciando la gestión de dotfiles con el método de repositorio 'bare'..."
+    
+    local SUDO_USER_NAME=${SUDO_USER:?SUDO_USER no está definido.}
+    local HOME_DIR="/home/$SUDO_USER_NAME"
+    
+    # URL de tu repositorio de dotfiles. ¡Asegúrate de que exista!
+    # Por ahora, usaremos una URL de ejemplo. Reemplázala por la tuya.
+    local DOTFILES_REPO_URL="https://github.com/DionelValera/Onix-hyprdots.git"
+    local DOTFILES_DIR="$HOME_DIR/.dotfiles"
+    local BACKUP_DIR="$HOME_DIR/.dotfiles-backup"
+    
+    # Alias para ejecutar git en nuestro repo bare
+    local CONFIG_ALIAS="/usr/bin/git --git-dir=$DOTFILES_DIR --work-tree=$HOME_DIR"
+
+    log "Clonando el repositorio de dotfiles como 'bare' en '$DOTFILES_DIR'..."
+    # Clonar como el usuario para que sea el propietario
+    sudo -u "$SUDO_USER_NAME" git clone --bare "$DOTFILES_REPO_URL" "$DOTFILES_DIR"
+
+    log "Intentando hacer checkout de los dotfiles..."
+    # Intentamos hacer checkout. Es probable que falle si hay archivos existentes.
+    if sudo -u "$SUDO_USER_NAME" $CONFIG_ALIAS checkout; then
+        log "Checkout de dotfiles completado con éxito en el primer intento."
+    else
+        log "Conflicto detectado. Realizando copia de seguridad de los archivos existentes..."
+        sudo -u "$SUDO_USER_NAME" mkdir -p "$BACKUP_DIR"
+        
+        # Obtenemos la lista de archivos en conflicto y los movemos al backup
+        local CONFLICTING_FILES
+        CONFLICTING_FILES=$(sudo -u "$SUDO_USER_NAME" $CONFIG_ALIAS checkout 2>&1 | grep -E "^\s+" | awk '{print $1}')
+
+        if [ -z "$CONFLICTING_FILES" ]; then
+            error "El checkout falló por una razón desconocida. Revisa los permisos o la salida de git."
+        fi
+
+        log "Archivos en conflicto a respaldar:\n$CONFLICTING_FILES"
+        # Usamos `rsync` para mover los archivos preservando su estructura de directorios
+        echo "$CONFLICTING_FILES" | while read -r file; do
+            # Asegurarse de que el directorio de destino exista en el backup
+            sudo -u "$SUDO_USER_NAME" mkdir -p "$BACKUP_DIR/$(dirname "$file")"
+            # Mover el archivo/directorio al backup
+            sudo -u "$SUDO_USER_NAME" mv "$HOME_DIR/$file" "$BACKUP_DIR/$file"
+        done
+
+        log "Copia de seguridad completada. Reintentando checkout..."
+        # Ahora el checkout debería funcionar
+        sudo -u "$SUDO_USER_NAME" $CONFIG_ALIAS checkout
+    fi
+
+    # Establecer la configuración para no mostrar archivos no rastreados
+    sudo -u "$SUDO_USER_NAME" $CONFIG_ALIAS config --local status.showUntrackedFiles no
+    log "Gestión de dotfiles completada. Los archivos están en su lugar."
+}
+
 configure_services() {
     log "Habilitando servicios del sistema (SDDM, Bluetooth)..."
     systemctl enable sddm
@@ -155,6 +209,10 @@ main() {
     install_aur_helper
     install_aur_packages
     install_flatpak_packages
+
+    # Copiar dotfiles antes de configurar servicios que puedan depender de ellos
+    copy_dotfiles
+
     install_grub_theme
     configure_services
 
