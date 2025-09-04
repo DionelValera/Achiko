@@ -1,18 +1,14 @@
-<svg width="150" height="150" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="onyx-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#bb9af7" />
-      <stop offset="100%" stop-color="#7aa2f7" />
-    </linearGradient>
-  </defs>
-  
-  <!-- Outer Hexagon -->
-  <path d="M50 2.5 L95.5 26.25 L95.5 73.75 L50 97.5 L4.5 73.75 L4.5 26.25 Z" 
-        fill="none" 
-        stroke="url(#onyx-grad)" 
-        stroke-width="5" />
-        
-  <!-- Inner 'O' like shape -->
-  <path d="M50 25 L72.5 37.5 L72.5 62.5 L50 75 L27.5 62.5 L27.5 37.5 Z"
-        fill="url(#onyx-grad)" />
+<svg width="120" height="120" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#1793D1" />
+            <stop offset="100%" stop-color="#00ADD8" />
+        </linearGradient>
+    </defs>
+    <path 
+        d="M15,15 L85,15 L40,50 L85,85 L15,85 L60,50 Z"
+        fill-rule="evenodd"
+        d="M50 5 L95 60 L40 95 L15 25 Z M50 30 L70 60 L45 70 L35 45 Z"
+        fill="url(#grad)" 
+    />
 </svg>
