@@ -12,7 +12,6 @@ readonly TMP_DIR="/tmp/catppuccin-grub-theme"
 readonly THEMES_DIR="/boot/grub/themes"
 readonly LOCAL_THEMES_PATH="../themes/grub" # Ruta a los temas locales
 readonly GRUB_CONFIG_FILE="/etc/default/grub"
-THEME_NAME=""
 
 # --- Funciones de Utilidad ---
 
@@ -179,7 +178,7 @@ install_catppuccin_theme() {
     # Copiamos el contenido para ser consistentes y robustos.
     cp -a --no-preserve=ownership "$TMP_DIR/src/$selected_flavor_name"/* "$dest_dir/"
 
-    configure_grub "$selected_flavor_name"
+    configure_grub "$selected_flavor_name" "false"
 }
 
 install_catppuccin_direct() {
