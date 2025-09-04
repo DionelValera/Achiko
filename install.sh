@@ -87,11 +87,23 @@ install_aur_helper() {
     fi
 
     log "Instalando 'yay' como asistente de AUR..."
+
+    # --- INICIO: Solución para el conflicto yay vs yay-bin ---
+    if pacman -Q yay-bin &> /dev/null; then
+        log "Detectado 'yay-bin' en conflicto. Desinstalando 'yay-bin'..."
+        pacman -Rns --noconfirm yay-bin
+    fi
+    # --- FIN: Solución para el conflicto yay vs yay-bin ---
+
     pacman -S --needed --noconfirm git base-devel
     
     # Es necesario ejecutar makepkg como un usuario normal, no como root.
     local YAY_DIR="/tmp/yay-build"
     
+    # --- INICIO: Limpiar directorio de construcción antes de clonar ---
+    rm -rf "$YAY_DIR"
+    # --- FIN: Limpiar directorio de construcción antes de clonar ---
+
     sudo -u "$SUDO_USER_NAME" git clone https://aur.archlinux.org/yay.git "$YAY_DIR"
     (cd "$YAY_DIR" && sudo -u "$SUDO_USER_NAME" makepkg -si --noconfirm)
     rm -rf "$YAY_DIR"

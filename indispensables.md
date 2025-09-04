@@ -91,3 +91,23 @@ Una vez que todo esté instalado y configurado, reinicia tu sistema para aplicar
 ```bash
 reboot
 ```
+
+ python: man page
+    completion parser /
+    web config tool
+    [instalado]
+    pkgfile:
+    command-not-found hook
+    groff: --help for
+    built-in commmands
+    [instalado]
+    mandoc: --help for
+    built-in commmands
+    (alternative)
+    xsel: X11 clipboard
+    integration
+    xclip: X11 clipboard
+    integration
+    (alternative)
+    wl-clipboard: Wayland
+    clipboard integration
