@@ -7,7 +7,7 @@
     </defs>
     <path 
         fill-rule="evenodd"
-        d="M50 5 L95 60 L40 95 L15 25 Z M50 30 L70 60 L45 70 L35 45 Z"
+        d="M10,30 L30,10 L90,10 L70,30 L70,70 L90,90 L30,90 L10,70 Z M50,25 L75,50 L50,75 L25,50 Z"
         fill="url(#grad)" 
     />
 </svg>
