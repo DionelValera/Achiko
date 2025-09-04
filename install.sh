@@ -10,6 +10,57 @@
 # Detener la ejecución si un comando falla
 set -e
 
+# --- Lógica de Animaciones de Carga (Integrada) ---
+# Las funciones y definiciones de animación están incluidas directamente en este script.
+
+# Definiciones de las animaciones
+# El primer valor es el intervalo en segundos entre cada fotograma.
+BLA_filling_bar=( 0.25 '█▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒' '██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒' '███▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒' '████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒' '█████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒' '██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒' '███████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒' '████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒' '█████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒' '██████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒' '███████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒' '████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒' '█████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒' '██████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒' '███████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒' '████████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒' '█████████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒' '██████████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒' '███████████████████▒▒▒▒▒▒▒▒▒▒▒▒▒' '████████████████████▒▒▒▒▒▒▒▒▒▒▒▒' '█████████████████████▒▒▒▒▒▒▒▒▒▒▒' '██████████████████████▒▒▒▒▒▒▒▒▒▒' '███████████████████████▒▒▒▒▒▒▒▒▒' '████████████████████████▒▒▒▒▒▒▒▒' '█████████████████████████▒▒▒▒▒▒▒' '██████████████████████████▒▒▒▒▒▒' '███████████████████████████▒▒▒▒▒' '████████████████████████████▒▒▒▒' '█████████████████████████████▒▒▒' '██████████████████████████████▒▒' '███████████████████████████████▒' '████████████████████████████████')
+BLA_quarter=( 0.25 ▖ ▘ ▝ ▗ )
+BLA_semi_circle=( 0.1 ◐ ◓ ◑ ◒ )
+BLA_braille=( 0.2 ⠁ ⠂ ⠄ ⡀ ⢀ ⠠ ⠐ ⠈ )
+BLA_braille_whitespace=( 0.2 ⣾ ⣽ ⣻ ⢿ ⡿ ⣟ ⣯ ⣷ )
+BLA_modern_metro=( 0.1 '▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▰▰▰▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▰▰▰▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▰▰▰▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▰▰▰▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▰▰▰▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▰▰▰▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▰▰▰▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▰▰▰▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▰▰▰▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▰▰▰▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▰▰▰▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▰▰▰' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▰▰' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▰' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' )
+BLA_circle_quadrants=( 0.15 '◜' '◝' '◞' '◟' )
+BLA_arc=( 0.15 '◜' '◠' '◝' '◞' '◡' '◟' )
+BLA_vertical_blocks=( 0.1 ' ' '▂' '▃' '▄' '▅' '▆' '▇' '█' '▇' '▆' '▅' '▄' '▃' ' ' )
+BLA_horizontal_blocks=( 0.1 '▏' '▎' '▍' '▌' '▋' '▊' '▉' '▊' '▋' '▌' '▍' '▎' )
+
+declare -a BLA_active_loading_animation
+
+BLA::play_loading_animation_loop() {
+  while true ; do
+    for frame in "${BLA_active_loading_animation[@]}" ; do
+      printf "\r%s" "${frame}"
+      sleep "${BLA_loading_animation_frame_interval}"
+    done
+  done
+}
+
+BLA::start_loading_animation() {
+  BLA_active_loading_animation=( "${@}" )
+  BLA_loading_animation_frame_interval="${BLA_active_loading_animation[0]}"
+  unset "BLA_active_loading_animation[0]"
+  tput civis # Hide the terminal cursor
+  BLA::play_loading_animation_loop &
+  BLA_loading_animation_pid="${!}"
+}
+
+BLA::stop_loading_animation() {
+  # Verificar si el PID existe antes de intentar matarlo
+  if [ -n "$BLA_loading_animation_pid" ] && ps -p "$BLA_loading_animation_pid" > /dev/null; then
+      kill "${BLA_loading_animation_pid}" &> /dev/null
+  fi
+  printf "\n"
+  tput cnorm # Restore the terminal cursor
+}
+
+# Asegurarse de que la animación se detenga si el script es interrumpido
+trap 'BLA::stop_loading_animation; exit 1' SIGINT
+
+# --- Variables Globales ---
+AUR_HELPER=""
+
 # --- Funciones de Utilidad ---
 log() {
     # Imprime un mensaje de log con formato
@@ -25,10 +76,36 @@ error() {
 confirm_action() {
     # Si estamos en modo no interactivo, siempre retorna éxito (sí)
     [[ "$NON_INTERACTIVE" == "true" ]] && return 0
-    read -p "$1 [y/N]: " -n 1 -r; echo
-    [[ $REPLY =~ ^[Yy]$ ]]
+    # Cambiado para que Enter signifique 'sí'
+    read -p "$1 [Y/n]: " -r
+    [[ -z "$REPLY" || ! "$REPLY" =~ ^[Nn]$ ]]
 }
 
+nuke_yay_traces() {
+    log "Iniciando limpieza profunda de instalaciones previas de 'yay'..."
+    
+    log "  -> Desinstalando paquetes 'yay', 'yay-bin' y sus derivados..."
+    pacman -Rns --noconfirm yay yay-bin yay-debug yay-bin-debug &> /dev/null || true
+
+    local SUDO_USER_NAME=${SUDO_USER:?SUDO_USER no está definido.}
+    local HOME_DIR="/home/$SUDO_USER_NAME"
+    log "  -> Eliminando directorios de configuración y caché del usuario..."
+    sudo -u "$SUDO_USER_NAME" rm -rf "$HOME_DIR/.config/yay"
+    sudo -u "$SUDO_USER_NAME" rm -rf "$HOME_DIR/.cache/yay"
+}
+
+nuke_paru_traces() {
+    log "Iniciando limpieza profunda de instalaciones previas de 'paru'..."
+    
+    log "  -> Desinstalando paquetes 'paru', 'paru-bin' y sus derivados..."
+    pacman -Rns --noconfirm paru paru-bin &> /dev/null || true
+
+    local SUDO_USER_NAME=${SUDO_USER:?SUDO_USER no está definido.}
+    local HOME_DIR="/home/$SUDO_USER_NAME"
+    log "  -> Eliminando directorios de configuración y caché del usuario..."
+    sudo -u "$SUDO_USER_NAME" rm -rf "$HOME_DIR/.config/paru"
+    sudo -u "$SUDO_USER_NAME" rm -rf "$HOME_DIR/.cache/paru"
+}
 # --- Verificaciones Iniciales ---
 log "Iniciando verificaciones del sistema..."
 
@@ -47,7 +124,7 @@ log "Verificaciones completadas. Iniciando instalación..."
 # --- Fases de Instalación ---
 
 update_system() {
-    log "Actualizando el sistema con Pacman..."
+    log "Actualizando el sistema con Pacman... (esto puede tardar unos minutos)"
     pacman -Syyu --noconfirm
 }
 
@@ -78,56 +155,121 @@ install_pacman_packages() {
 }
 
 install_aur_helper() {
+    # La variable global AUR_HELPER es establecida por esta función
     local SUDO_USER_NAME=${SUDO_USER:?SUDO_USER no está definido. Ejecuta con sudo.}
-
-    # Instala 'yay' si no se encuentra 'yay' o 'paru'
-    if sudo -u "$SUDO_USER_NAME" command -v yay &> /dev/null || sudo -u "$SUDO_USER_NAME" command -v paru &> /dev/null; then
-        log "Asistente de AUR (yay/paru) ya está instalado. Omitiendo."
+ 
+    # 1. Detectar si ya hay un asistente instalado
+    if pacman -Q paru &> /dev/null; then
+        log "Asistente de AUR 'paru' ya está instalado."
+        AUR_HELPER="paru"
+        return
+    elif pacman -Q yay &> /dev/null; then
+        log "Asistente de AUR 'yay' ya está instalado."
+        AUR_HELPER="yay"
         return
     fi
-
-    log "Instalando 'yay' como asistente de AUR..."
-
-    # --- INICIO: Solución para el conflicto yay vs yay-bin ---
-    if pacman -Q yay-bin &> /dev/null; then
-        log "Detectado 'yay-bin' en conflicto. Desinstalando 'yay-bin'..."
-        pacman -Rns --noconfirm yay-bin
+ 
+    # 2. Si no hay asistente, preguntar al usuario
+    log "No se encontró un asistente de AUR. Por favor, elige uno para instalar."
+    
+    local choice=""
+    if [[ "$NON_INTERACTIVE" == "true" ]]; then
+        log "Modo no interactivo detectado. Instalando 'paru' por defecto."
+        choice="paru"
+    else
+        PS3=$'\n\e[1;33m¿Qué asistente de AUR deseas instalar? (introduce el número): \e[0m'
+        options=("paru (popular, escrito en Rust)" "yay (popular, escrito en Go)" "Omitir")
+        select opt in "${options[@]}"; do
+            case $REPLY in
+                1) choice="paru"; break ;;
+                2) choice="yay"; break ;;
+                3) log "Se omitió la instalación del asistente de AUR."; return ;;
+                *) echo -e "\e[31mOpción inválida. Inténtalo de nuevo.\e[0m";;
+            esac
+        done
     fi
-    # --- FIN: Solución para el conflicto yay vs yay-bin ---
+ 
+    # 3. Instalar el asistente seleccionado
+    if [[ "$choice" == "paru" ]]; then
+        log "Instalando 'paru' desde AUR..."
 
-    pacman -S --needed --noconfirm git base-devel
-    
-    # Es necesario ejecutar makepkg como un usuario normal, no como root.
-    local YAY_DIR="/tmp/yay-build"
-    
-    # --- INICIO: Limpiar directorio de construcción antes de clonar ---
-    rm -rf "$YAY_DIR"
-    # --- FIN: Limpiar directorio de construcción antes de clonar ---
+        # Dependencias para construir paru (rustup es necesario)
+        log "Instalando dependencias de compilación (rust)..."
+        # Manejar el posible conflicto entre 'rust' y 'rustup'
+        if pacman -Qq rust &> /dev/null; then
+            log "  -> Paquete 'rust' en conflicto detectado. Eliminándolo para instalar 'rustup'."
+            pacman -Rns --noconfirm rust
+        fi
+        pacman -S --needed --noconfirm git base-devel rustup
+        
+        nuke_paru_traces
 
-    sudo -u "$SUDO_USER_NAME" git clone https://aur.archlinux.org/yay.git "$YAY_DIR"
-    (cd "$YAY_DIR" && sudo -u "$SUDO_USER_NAME" makepkg -si --noconfirm)
-    rm -rf "$YAY_DIR"
-    
-    log "'yay' instalado correctamente."
+        local PARU_DIR="/tmp/paru-build"
+        rm -rf "$PARU_DIR"
+
+        log "Clonando el repositorio de 'paru'..."
+        sudo -u "$SUDO_USER_NAME" git clone https://aur.archlinux.org/paru.git "$PARU_DIR"
+
+        log "Compilando e instalando 'paru' (puede solicitar contraseña sudo)..."
+        # Se usa --overwrite '*' para forzar la instalación y evitar errores de archivos en conflicto.
+        (
+            cd "$PARU_DIR" && \
+            sudo -u "$SUDO_USER_NAME" rustup override set stable && \
+            sudo -u "$SUDO_USER_NAME" rustup update stable && \
+            sudo -u "$SUDO_USER_NAME" makepkg -s --noconfirm && \
+            sudo pacman -U --noconfirm --overwrite '*' paru-*.pkg.tar.zst
+        )
+        rm -rf "$PARU_DIR"
+        
+        AUR_HELPER="paru"
+        log "'paru' instalado correctamente."
+    elif [[ "$choice" == "yay" ]]; then
+        log "Instalando 'yay' desde AUR..."
+ 
+        # Dependencias para construir yay (go es necesario)
+        log "Instalando dependencias de compilación (go)..."
+        pacman -S --needed --noconfirm git base-devel go
+        
+        nuke_yay_traces
+ 
+        local YAY_DIR="/tmp/yay-build"
+        rm -rf "$YAY_DIR"
+ 
+        log "Clonando el repositorio de 'yay'..."
+        sudo -u "$SUDO_USER_NAME" git clone https://aur.archlinux.org/yay.git "$YAY_DIR"
+
+        log "Compilando e instalando 'yay' (puede solicitar contraseña sudo)..."
+        # Se usa --overwrite '*' para forzar la instalación y evitar errores de archivos en conflicto.
+        (
+            cd "$YAY_DIR" && \
+            sudo -u "$SUDO_USER_NAME" makepkg -s --noconfirm && \
+            sudo pacman -U --noconfirm --overwrite '*' yay-*.pkg.tar.zst
+        )
+        rm -rf "$YAY_DIR"
+        
+        AUR_HELPER="yay"
+        log "'yay' instalado correctamente."
+    fi
 }
 
 install_aur_packages() {
-    local AUR_HELPER
-    local SUDO_USER_NAME=${SUDO_USER:?SUDO_USER no está definido.}
-
-    if sudo -u "$SUDO_USER_NAME" command -v yay &> /dev/null; then AUR_HELPER="yay"; elif sudo -u "$SUDO_USER_NAME" command -v paru &> /dev/null; then AUR_HELPER="paru"; else
-        error "No se encontró un asistente de AUR. No se pueden instalar paquetes de AUR."
+    # La variable global AUR_HELPER es establecida por install_aur_helper
+    if [ -z "$AUR_HELPER" ]; then
+        log "No hay un asistente de AUR configurado. Omitiendo la instalación de paquetes de AUR."
+        return
     fi
+
+    local SUDO_USER_NAME=${SUDO_USER:?SUDO_USER no está definido.}
 
     log "Instalando paquetes desde AUR con '$AUR_HELPER'..."
     local packages=(
         vscodium-bin vscodium-bin-marketplace speedtest-go
-        waydroid zen-browser-bin
+        # waydroid zen-browser-bin
     )
 
     local to_install=()
     for pkg in "${packages[@]}"; do
-        if ! sudo -u "$SUDO_USER_NAME" $AUR_HELPER -Q "$pkg" &> /dev/null; then
+        if ! sudo -u "$SUDO_USER_NAME" "$AUR_HELPER" -Q "$pkg" &> /dev/null; then
             to_install+=("$pkg")
         fi
     done
@@ -138,16 +280,19 @@ install_aur_packages() {
     fi
 
     # El asistente de AUR no debe ejecutarse como root.
-    log "Instalando: ${to_install[*]}"
-    sudo -u "$SUDO_USER_NAME" $AUR_HELPER -S --noconfirm "${to_install[@]}"
+    log "Instalando: ${to_install[*]} (puede solicitar contraseña o revisión del PKGBUILD)"
+    # La animación se detiene aquí para permitir la interacción con el asistente de AUR.
+    # El flag --needed evita reinstalaciones innecesarias.
+    sudo -u "$SUDO_USER_NAME" "$AUR_HELPER" -S --noconfirm --needed "${to_install[@]}"
+    log "Instalación de paquetes de AUR completada."
 }
 
 install_flatpak_packages() {
     log "Instalando aplicaciones desde Flatpak..."
     local packages=(
-        com.github.phase1geo.cohesion
-        org.gimp.GIMP.Plugin.Fotema
-        info.febvre.Amberol
+        io.github.brunofin.Cohesion
+        app.fotema.Fotema
+        com.github.neithern.g4music
     )
 
     # Obtener una lista de las aplicaciones de Flatpak ya instaladas
@@ -167,8 +312,17 @@ install_flatpak_packages() {
         return
     fi
 
-    log "Instalando: ${to_install[*]}"
-    flatpak install flathub --noninteractive --assumeyes "${to_install[@]}"
+    log "Intentando instalar las siguientes aplicaciones de Flatpak: ${to_install[*]}"
+    
+    for pkg in "${to_install[@]}"; do
+        log "  -> Instalando '$pkg'..."
+        # Se intenta instalar cada paquete individualmente.
+        # Si un paquete falla (p. ej., no se encuentra), muestra una advertencia y continúa con el siguiente.
+        if ! flatpak install flathub --noninteractive --assumeyes "$pkg"; then
+            log "\e[1;33mADVERTENCIA: No se pudo instalar la aplicación Flatpak '$pkg'. Es posible que ya no esté disponible en Flathub.\e[0m"
+        fi
+    done
+    log "Instalación de paquetes de Flatpak completada."
 }
 
 install_grub_theme() {
@@ -278,14 +432,28 @@ main() {
     if confirm_action "Paso 2: ¿Instalar paquetes esenciales de Pacman?"; then
         install_pacman_packages
     fi
-    if confirm_action "Paso 3: ¿Instalar asistente de AUR (yay) y paquetes de AUR?"; then
+
+    # --- Instalación de AUR ---
+    # Primero, verificar si ya existe un asistente de AUR.
+    if ! pacman -Q paru &> /dev/null && ! pacman -Q yay &> /dev/null; then
+        # Si no existe, preguntar si se desea instalar uno.
+        if confirm_action "Paso 3: No se encontró un asistente de AUR. ¿Deseas instalar uno (paru/yay)?"; then
+            install_aur_helper
+        fi
+    else
+        # Si ya existe, simplemente se llama a la función para que detecte cuál es y lo registre.
         install_aur_helper
+    fi
+
+    # Segundo, preguntar por separado si se desean instalar los paquetes de AUR.
+    if confirm_action "Paso 4: ¿Instalar paquetes desde AUR?"; then
         install_aur_packages
     fi
-    if confirm_action "Paso 4: ¿Instalar aplicaciones de Flatpak?"; then
+
+    if confirm_action "Paso 5: ¿Instalar aplicaciones de Flatpak?"; then
         install_flatpak_packages
     fi
-    if confirm_action "Paso 5: ¿Instalar la configuración de Onix (dotfiles)?"; then
+    if confirm_action "Paso 6: ¿Instalar la configuración de Onix (dotfiles)?"; then
         copy_dotfiles
     fi
 
