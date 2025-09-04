@@ -75,22 +75,36 @@ sudo ./install.sh --noconfirm
 Si prefieres tener un control total sobre cada paso, puedes seguir la guía de instalación manual:
 ➡️ **[Guía de Instalación y Configuración](indispensables.md)**
 
-### 🗑️ Desinstalación y Uso Modular
+##  Uso Avanzado
 
-El proyecto está diseñado para ser modular. Además del script de instalación principal, se proporcionan scripts para tareas específicas como la desinstalación.
-
-#### Desinstalación de la Configuración
-
-Se proporciona un script para revertir los cambios de configuración (dotfiles y tema de GRUB). Este script **no** desinstala los paquetes de software. Para una desinstalación automatizada, puedes usar el flag `--noconfirm`.
-
+### Desinstalación de la Configuración
+Se proporciona un script para revertir los cambios de configuración (dotfiles y tema de GRUB). Este script **no** desinstala los paquetes de software.
 ```bash
 sudo ./uninstall.sh
+sudo ./uninstall.sh --noconfirm # Para desinstalación desatendida
 ```
-#### Uso Avanzado de Scripts 
- Algunos scripts individuales, como el del tema de GRUB, pueden ejecutarse de forma independiente. Por ejemplo, si solo quieres gestionar el tema de GRUB sin afectar nada más:
- ```bash
- sudo ./scripts/install-grub-theme.sh [install|uninstall]
- ```
+
+### Ejecución de Scripts Individuales
+Algunos scripts, como el del tema de GRUB, pueden ejecutarse de forma independiente.
+```bash
+sudo ./scripts/install-grub-theme.sh [install|uninstall]
+```
+
+### Exportar Listas de Paquetes
+Después de la instalación, puedes generar un registro de todo el software instalado con estos comandos:
+
+*   **Paquetes de Repositorios Oficiales (Pacman):**
+    ```bash
+    pacman -Qeq > pacman_packages.txt
+    ```
+*   **Paquetes del AUR (yay/paru):**
+    ```bash
+    pacman -Qemq > aur_packages.txt
+    ```
+*   **Aplicaciones de Flatpak:**
+    ```bash
+    flatpak list --app --columns=application > flatpak_packages.txt
+    ```
 
 ## 🌱 Sobre el Proyecto y Contribuciones
 

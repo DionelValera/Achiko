@@ -1,0 +1,15 @@
+fabric-cli-git
+github-desktop
+gpu-screen-recorder
+gray-git
+light
+matugen-bin
+paru
+paru-debug
+python-fabric-git
+speedtest-go
+swww-git
+vscodium-bin
+vscodium-bin-marketplace
+waydroid
+yay-bin-debug
