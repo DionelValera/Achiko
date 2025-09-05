@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ===================================================================
-# Script de Instalación para Onix Hyprdots
+# Script de Instalación para Achiko Hyprdots
 #
 # Automatiza la instalación y configuración del entorno Hyprland
 # basado en la guía del proyecto.
@@ -453,14 +453,14 @@ main() {
     if confirm_action "Paso 5: ¿Instalar aplicaciones de Flatpak?"; then
         install_flatpak_packages
     fi
-    if confirm_action "Paso 6: ¿Instalar la configuración de Onix (dotfiles)?"; then
+    if confirm_action "Paso 6: ¿Instalar la configuración de Achiko (dotfiles)?"; then
         copy_dotfiles
     fi
 
     install_grub_theme # Esta función ya es interactiva y tiene su propia lógica
     configure_services # Esto no necesita confirmación, es una acción final
 
-    log "\e[1;32m¡Instalación de Onix Hyprdots completada!\e[0m"
+    log "\e[1;32m¡Instalación de Achiko Hyprdots completada!\e[0m"
     echo -e "Se recomienda reiniciar el sistema para aplicar todos los cambios."
     echo -e "Ejecuta: \e[1;33mreboot\e[0m"
 }

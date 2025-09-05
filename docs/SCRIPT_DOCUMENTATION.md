@@ -1,6 +1,6 @@
 # Documentación Técnica Exhaustiva del Script `install.sh`
 
-Este documento proporciona un análisis exhaustivo y detallado del script `install.sh`, sirviendo como una referencia técnica completa. Se desglosa cada función, comando y decisión de diseño para ofrecer una comprensión total del flujo de trabajo y la lógica interna del instalador de Onix Hyprdots.
+Este documento proporciona un análisis exhaustivo y detallado del script `install.sh`, sirviendo como una referencia técnica completa. Se desglosa cada función, comando y decisión de diseño para ofrecer una comprensión total del flujo de trabajo y la lógica interna del instalador de Achiko Hyprdots.
 
 ---
 
@@ -27,11 +27,11 @@ El script `install.sh` no es solo una secuencia de comandos, sino una herramient
 
 1.  **Clonar el Repositorio:**
     ```bash
-    git clone https://github.com/DionelValera/Onix-hyprdots.git
+    git clone https://github.com/DionelValera/Achiko-hyprdots.git
     ```
 2.  **Navegar al Directorio:**
     ```bash
-    cd Onix-hyprdots
+    cd Achiko-hyprdots
     ```
 3.  **Otorgar Permisos de Ejecución:**
     ```bash
@@ -122,6 +122,7 @@ Esta es una de las funciones más complejas y robustas.
  
 #### `copy_dotfiles()`
 -   **Filosofía:** Usa enlaces simbólicos (`symlinks`) para gestionar la configuración. Los archivos de configuración reales residen en el directorio del repositorio (`Onix-hyprdots/dotfiles`), y en el `HOME` del usuario solo hay "accesos directos" a ellos. Esto permite actualizar la configuración simplemente haciendo un `git pull` en el repositorio.
+-   **Filosofía:** Usa enlaces simbólicos (`symlinks`) para gestionar la configuración. Los archivos de configuración reales residen en el directorio del repositorio (`Achiko-hyprdots/dotfiles`), y en el `HOME` del usuario solo hay "accesos directos" a ellos. Esto permite actualizar la configuración simplemente haciendo un `git pull` en el repositorio.
 -   **Proceso Detallado:**
     1.  **Copia de Seguridad:** Crea un directorio de respaldo único (`~/.dotfiles-backup-FECHA-HORA`).
     2.  **Bucle Seguro:** Usa `find ... -print0 | while IFS= read -r -d '' ...` para iterar sobre los archivos en `dotfiles/`. Este método es el más seguro para manejar nombres de archivo que contienen espacios o caracteres especiales.

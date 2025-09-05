@@ -32,13 +32,13 @@
   <i>(Aquí irán las capturas de pantalla del escritorio, terminal, aplicaciones, etc.)</i>
   <br>
   <b>[¡Próximamente capturas de pantalla!]</b>
-  <!-- <img src="https://raw.githubusercontent.com/gist/DionelValera/f9499638b73f9352c64f73c5a4aad7a1/raw/onix_placeholder.png" alt="Onix Hyprdots Placeholder" width="600"> -->
+  <!-- <img src="https://raw.githubusercontent.com/gist/DionelValera/f9499638b73f9352c64f73c5a4aad7a1/raw/achiko_placeholder.png" alt="Achiko Hyprdots Placeholder" width="600"> -->
 
 </p>
 
 ## 🚀 Características Principales
 
-Onix no es solo un conjunto de archivos de configuración; es un ecosistema pensado para mejorar tu flujo de trabajo y tu interacción diaria con el sistema.
+Achiko no es solo un conjunto de archivos de configuración; es un ecosistema pensado para mejorar tu flujo de trabajo y tu interacción diaria con el sistema.
 
 -   🎨 **Shell Renovada:** Una experiencia de terminal mejorada con una configuración moderna, autocompletado inteligente y alias útiles para una productividad máxima.
 -   🛠️ **Herramientas de Desarrollo Flexibles:** Scripts de instalación que te permiten elegir solo las herramientas de desarrollo que necesitas, manteniendo tu sistema limpio y ágil.
@@ -50,14 +50,14 @@ Onix no es solo un conjunto de archivos de configuración; es un ecosistema pens
 
 ## 🔧 Instalación
 
-Empezar con Onix es sencillo. (¡Se recomienda una instalación limpia de Arch Linux!).
+Empezar con Achiko es sencillo. (¡Se recomienda una instalación limpia de Arch Linux!).
 
 ### Instalación Rápida (Recomendada)
 
 Para una instalación completa y automatizada, simplemente copia y pega el siguiente comando en tu terminal:
 
 ```bash
-git clone https://github.com/DionelValera/Onix-hyprdots.git && cd Onix-hyprdots && chmod +x install.sh && sudo ./install.sh
+git clone https://github.com/DionelValera/Achiko-hyprdots.git && cd Achiko-hyprdots && chmod +x install.sh && sudo ./install.sh
 ```
 > **Nota:** El script te pedirá tu contraseña para ejecutar los comandos que requieren privilegios de administrador (`sudo`). Se recomienda leer el script `install.sh` para entender los cambios que se realizarán en tu sistema.
 

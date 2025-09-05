@@ -1,6 +1,6 @@
 # Guía de Gestión de Dotfiles (Método de Repositorio Único)
 
-Este documento es una guía de referencia personal para entender y gestionar la configuración del entorno (dotfiles) de Onix Hyprdots.
+Este documento es una guía de referencia personal para entender y gestionar la configuración del entorno (dotfiles) de Achiko Hyprdots.
 
 ---
 
@@ -8,9 +8,9 @@ Este documento es una guía de referencia personal para entender y gestionar la 
 
 Para mantener el proyecto simple, unificado y fácil de navegar para los visitantes de GitHub, utilizamos una arquitectura de repositorio único:
 
-1.  **`Onix-hyprdots` (El Instalador):**
+1.  **`Achiko-hyprdots` (El Instalador):**
     -   **Contenido:** Todo está aquí. Scripts de instalación, documentación, temas y una carpeta especial llamada `dotfiles/`.
-    -   **La carpeta `dotfiles/`:** Esta carpeta es la "fuente de la verdad". Contiene todos los archivos de configuración (`.config/`, `.bashrc`, etc.) que conforman el entorno Onix.
+    -   **La carpeta `dotfiles/`:** Esta carpeta es la "fuente de la verdad". Contiene todos los archivos de configuración (`.config/`, `.bashrc`, etc.) que conforman el entorno Achiko.
 
 ---
 
@@ -22,8 +22,9 @@ En lugar de copiar archivos (lo que crea duplicados), el script de instalación 
 
 1.  **Copia de Seguridad:** El script `install.sh` primero respalda cualquier configuración existente del usuario en una carpeta `~/.dotfiles-backup-FECHA`.
 2.  **Creación de Enlaces:** Luego, crea enlaces simbólicos desde el directorio `/home` del usuario hacia los archivos correspondientes dentro de la carpeta `Onix-hyprdots/dotfiles/`.
+2.  **Creación de Enlaces:** Luego, crea enlaces simbólicos desde el directorio `/home` del usuario hacia los archivos correspondientes dentro de la carpeta `Achiko-hyprdots/dotfiles/`.
 
-    **Ejemplo:** Se crea un enlace `~/.config/hypr` que en realidad apunta a `.../Onix-hyprdots/dotfiles/.config/hypr`.
+    **Ejemplo:** Se crea un enlace `~/.config/hypr` que en realidad apunta a `.../Achiko-hyprdots/dotfiles/.config/hypr`.
 
 ### Ventajas
 
@@ -38,7 +39,7 @@ En lugar de copiar archivos (lo que crea duplicados), el script de instalación 
 Para añadir o modificar tu configuración, el flujo es muy directo:
 
 1.  **Crea o Modifica un Archivo DENTRO de la carpeta `dotfiles/`:**
-    `nvim /ruta/a/Onix-hyprdots/dotfiles/.config/kitty/kitty.conf`
+    `nvim /ruta/a/Achiko-hyprdots/dotfiles/.config/kitty/kitty.conf`
 
 2.  **Añade, Comprueba y Sube los Cambios con Git (como siempre):**
     ```bash
