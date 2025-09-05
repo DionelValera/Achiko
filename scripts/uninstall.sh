@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ===================================================================
-# Script de Desinstalación para Achiko Hyprdots
+# Script de Desinstalación para Project Achiko
 #
 # Revierte los cambios de configuración realizados por install.sh,
 # restaurando los dotfiles originales del usuario desde la copia
@@ -60,7 +60,7 @@ restore_dotfiles() {
     fi
 
     # 1. Eliminar los enlaces simbólicos creados por el instalador
-    log "Buscando y eliminando enlaces simbólicos de Achiko Hyprdots..."
+    log "Buscando y eliminando enlaces simbólicos de Project Achiko..."
     
     # Este método es más robusto: busca cualquier enlace simbólico en el home
     # que apunte a una ruta que contenga 'Achiko-hyprdots/dotfiles'.
@@ -111,7 +111,7 @@ main() {
         log "Ejecutando en modo no interactivo. Se procederá sin confirmación."
     fi
 
-    echo -e "\n\e[1;33m*** ASISTENTE DE DESINSTALACIÓN DE ACHIKO HYPRDOTS ***\e[0m"
+    echo -e "\n\e[1;33m*** ASISTENTE DE DESINSTALACIÓN DE PROJECT ACHIKO ***\e[0m"
     echo "Este script intentará revertir los cambios de CONFIGURACIÓN realizados en tu sistema."
     echo -e "\e[1;31mNO desinstalará los paquetes de software (pacman, aur, flatpak).\e[0m"
 

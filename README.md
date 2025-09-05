@@ -1,5 +1,4 @@
-
-# Achiko Hyprdots
+# Project Achiko
 
 <p align="center">
   <a href="https://hyprland.org/" target="_blank">
@@ -20,25 +19,25 @@
     <img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=for-the-badge" alt="Contributions Welcome">
 </p>
 
-**Achiko Hyprdots** es mi visión personal de un entorno de escritorio perfecto con Hyprland. Nacido de la pasión por la personalización y la eficiencia, este proyecto busca ofrecer una experiencia de usuario cohesiva, moderna y altamente adaptable. Aunque está optimizado para Arch Linux, los principios y scripts son portables a otros sistemas Unix-like.
+**Project Achiko** es mi visión personal de un entorno de escritorio perfecto con Hyprland. Nacido de la pasión por la personalización y la eficiencia, este proyecto busca ofrecer una experiencia de usuario cohesiva, moderna y altamente adaptable. Aunque está optimizado para Arch Linux, los principios y scripts son portables a otros sistemas Unix-like.
 
 ---
 
 ## ✨ Galería
 
-¡Una imagen vale más que mil palabras! Aquí puedes ver Achiko Hyprdots en acción.
+¡Una imagen vale más que mil palabras! Aquí puedes ver Project Achiko en acción.
 
 <p align="center">
   <i>(Aquí irán las capturas de pantalla del escritorio, terminal, aplicaciones, etc.)</i>
   <br>
   <b>[¡Próximamente capturas de pantalla!]</b>
-  <!-- <img src="https://raw.githubusercontent.com/gist/DionelValera/f9499638b73f9352c64f73c5a4aad7a1/raw/achiko_placeholder.png" alt="Achiko Hyprdots Placeholder" width="600"> -->
+  <!-- <img src="https://raw.githubusercontent.com/gist/DionelValera/f9499638b73f9352c64f73c5a4aad7a1/raw/achiko_placeholder.png" alt="Project Achiko Placeholder" width="600"> -->
 
 </p>
 
 ## 🚀 Características Principales
 
-Achiko no es solo un conjunto de archivos de configuración; es un ecosistema pensado para mejorar tu flujo de trabajo y tu interacción diaria con el sistema.
+Project Achiko no es solo un conjunto de archivos de configuración; es un ecosistema pensado para mejorar tu flujo de trabajo y tu interacción diaria con el sistema.
 
 -   🎨 **Shell Renovada:** Una experiencia de terminal mejorada con una configuración moderna, autocompletado inteligente y alias útiles para una productividad máxima.
 -   🛠️ **Herramientas de Desarrollo Flexibles:** Scripts de instalación que te permiten elegir solo las herramientas de desarrollo que necesitas, manteniendo tu sistema limpio y ágil.
@@ -50,7 +49,7 @@ Achiko no es solo un conjunto de archivos de configuración; es un ecosistema pe
 
 ## 🔧 Instalación
 
-Empezar con Achiko es sencillo. (¡Se recomienda una instalación limpia de Arch Linux!).
+Empezar con Project Achiko es sencillo. (¡Se recomienda una instalación limpia de Arch Linux!).
 
 ### Instalación Rápida (Recomendada)
 
@@ -112,7 +111,7 @@ Este proyecto es mantenido por un recién graduado en ingeniería de software co
 -   Abrir un **Issue** para reportar problemas o sugerir características.
 -   Enviar un **Pull Request** con tus mejoras.
 
-Juntos podemos hacer de Onix una experiencia aún mejor.
+Juntos podemos hacer de Project Achiko una experiencia aún mejor.
 
 ## ❤️ Agradecimientos
 

@@ -1,6 +1,6 @@
 # Guía de Gestión de Dotfiles (Método de Repositorio Único)
 
-Este documento es una guía de referencia personal para entender y gestionar la configuración del entorno (dotfiles) de Achiko Hyprdots.
+Este documento es una guía de referencia personal para entender y gestionar la configuración del entorno (dotfiles) de Project Achiko.
 
 ---
 
@@ -10,7 +10,7 @@ Para mantener el proyecto simple, unificado y fácil de navegar para los visitan
 
 1.  **`Achiko-hyprdots` (El Instalador):**
     -   **Contenido:** Todo está aquí. Scripts de instalación, documentación, temas y una carpeta especial llamada `dotfiles/`.
-    -   **La carpeta `dotfiles/`:** Esta carpeta es la "fuente de la verdad". Contiene todos los archivos de configuración (`.config/`, `.bashrc`, etc.) que conforman el entorno Achiko.
+    -   **La carpeta `dotfiles/`:** Esta carpeta es la "fuente de la verdad". Contiene todos los archivos de configuración (`.config/`, `.bashrc`, etc.) que conforman el entorno de Project Achiko.
 
 ---
 
@@ -21,7 +21,6 @@ En lugar de copiar archivos (lo que crea duplicados), el script de instalación 
 ### ¿Cómo Funciona?
 
 1.  **Copia de Seguridad:** El script `install.sh` primero respalda cualquier configuración existente del usuario en una carpeta `~/.dotfiles-backup-FECHA`.
-2.  **Creación de Enlaces:** Luego, crea enlaces simbólicos desde el directorio `/home` del usuario hacia los archivos correspondientes dentro de la carpeta `Onix-hyprdots/dotfiles/`.
 2.  **Creación de Enlaces:** Luego, crea enlaces simbólicos desde el directorio `/home` del usuario hacia los archivos correspondientes dentro de la carpeta `Achiko-hyprdots/dotfiles/`.
 
     **Ejemplo:** Se crea un enlace `~/.config/hypr` que en realidad apunta a `.../Achiko-hyprdots/dotfiles/.config/hypr`.

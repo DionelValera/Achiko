@@ -1,4 +1,4 @@
-# Guía de Instalación y Configuración: Achiko Hyprdots
+# Guía de Instalación y Configuración: Project Achiko
 
 Guía personal para instalar y configurar un entorno de escritorio con Hyprland en Arch Linux, organizada por gestor de paquetes y pasos de configuración.
 

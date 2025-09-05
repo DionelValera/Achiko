@@ -1,6 +1,6 @@
 # Documentación Técnica Exhaustiva del Script `install.sh`
 
-Este documento proporciona un análisis exhaustivo y detallado del script `install.sh`, sirviendo como una referencia técnica completa. Se desglosa cada función, comando y decisión de diseño para ofrecer una comprensión total del flujo de trabajo y la lógica interna del instalador de Achiko Hyprdots.
+Este documento proporciona un análisis exhaustivo y detallado del script `install.sh`, sirviendo como una referencia técnica completa. Se desglosa cada función, comando y decisión de diseño para ofrecer una comprensión total del flujo de trabajo y la lógica interna del instalador de Project Achiko.
 
 ---
 
@@ -121,7 +121,6 @@ Esta es una de las funciones más complejas y robustas.
 -   **Manejo de Errores:** Si `flatpak install` falla para una aplicación, el `if ! ...` captura el error, imprime una advertencia en amarillo y el bucle continúa con la siguiente aplicación. Esto evita que una aplicación eliminada de Flathub detenga toda la instalación.
  
 #### `copy_dotfiles()`
--   **Filosofía:** Usa enlaces simbólicos (`symlinks`) para gestionar la configuración. Los archivos de configuración reales residen en el directorio del repositorio (`Onix-hyprdots/dotfiles`), y en el `HOME` del usuario solo hay "accesos directos" a ellos. Esto permite actualizar la configuración simplemente haciendo un `git pull` en el repositorio.
 -   **Filosofía:** Usa enlaces simbólicos (`symlinks`) para gestionar la configuración. Los archivos de configuración reales residen en el directorio del repositorio (`Achiko-hyprdots/dotfiles`), y en el `HOME` del usuario solo hay "accesos directos" a ellos. Esto permite actualizar la configuración simplemente haciendo un `git pull` en el repositorio.
 -   **Proceso Detallado:**
     1.  **Copia de Seguridad:** Crea un directorio de respaldo único (`~/.dotfiles-backup-FECHA-HORA`).
