@@ -389,22 +389,9 @@ install_sddm_theme() {
         return
     fi
 
-    PS3=$'\n\e[1;33m¿Qué deseas hacer con el tema de SDDM? (introduce el número): \e[0m'
-    options=(
-        "Instalar un tema para SDDM"
-        "Omitir este paso"
-    )
-    select opt in "${options[@]}"; do
-        case $REPLY in
-            1)
-                ./"$SDDM_SCRIPT_PATH" install
-                break ;;
-            2)
-                log "Omitiendo la configuración del tema de SDDM."
-                break ;;
-            *) echo -e "\e[31mOpción inválida. Inténtalo de nuevo.\e[0m";;
-        esac
-    done
+    # La confirmación ya se hizo en la función main.
+    # Se procede directamente a la instalación llamando al sub-script.
+    ./"$SDDM_SCRIPT_PATH" install
 }
 
 copy_dotfiles() {

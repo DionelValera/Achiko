@@ -142,7 +142,7 @@ install_silent_sddm_theme() {
 
     if [ ! -d "$SILENT_SDDM_TMP_DIR" ]; then
         log "Clonando el repositorio del tema..."
-        git clone "$SILENT_SDDM_REPO_URL" "$SILENT_SDDM_TMP_DIR" --depth 1
+        git clone "$SILENT_SDDM_REPO_URL" "$SILENT_SDDM_TMP_DIR" --depth=1
     fi
 
     local theme_name="Silent-SDDM"
@@ -151,8 +151,10 @@ install_silent_sddm_theme() {
     rm -rf "$dest_dir"
     mkdir -p "$dest_dir"
     
-    # Copiar los recursos del tema, excluyendo archivos de repo como README, .git, etc.
-    cp -a --no-preserve=ownership "$SILENT_SDDM_TMP_DIR"/{Main.qml,Login.qml,components,images} "$dest_dir/"
+    # Copiamos todo el contenido del directorio clonado al destino.
+    # Esto es más robusto a cambios en el repositorio de origen.
+    log "Copiando el contenido del tema..."
+    cp -a --no-preserve=ownership "$SILENT_SDDM_TMP_DIR"/* "$dest_dir/"
 
     # El tema original no incluye un theme.conf, así que lo creamos.
     log "Creando el archivo de manifiesto 'theme.conf'..."
@@ -162,6 +164,7 @@ name=Silent-SDDM
 author=uiriansan
 version=1.0
 description=A silent and minimal theme for SDDM.
+preview=preview.gif
 EOF
 
     apply_sddm_theme_config "$theme_name" "$non_interactive"

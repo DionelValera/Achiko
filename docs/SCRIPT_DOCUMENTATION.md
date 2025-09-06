@@ -131,6 +131,23 @@ Esta es una de las funciones más complejas y robustas.
         -   `-s`: Symbolic (crear un enlace simbólico).
 
 #### `install_grub_theme()` 
+
+#### `install_sddm_theme()`
+-   **Propósito:** Personalizar la apariencia del gestor de inicio de sesión (login screen) SDDM.
+-   **Delegación:** Al igual que la gestión de temas de GRUB, esta función delega toda la lógica a un script especializado y robusto: `scripts/install-sddm-theme.sh`.
+-   **Características del Sub-script:**
+    1.  **Selección de Temas:** Presenta un menú interactivo que detecta automáticamente:
+        -   **Temas Locales:** Cualquier tema que se encuentre en la carpeta `themes/sddm/` del repositorio.
+        -   **Temas de Internet:** Opciones predefinidas como `Silent-SDDM`, que se clonan directamente desde su repositorio de GitHub.
+    2.  **Configuración de Escalado (HiDPI):** Después de instalar un tema, el script pregunta al usuario si desea configurar el escalado. Ofrece un menú con perfiles de DPI (Puntos Por Pulgada) para asegurar que la pantalla de inicio se vea correctamente en monitores de alta resolución (2K, 4K).
+    3.  **Configuración Segura:** En lugar de modificar el archivo principal `/etc/sddm.conf`, el script crea un archivo de configuración específico en `/etc/sddm.conf.d/achiko-theme.conf`. Este es el método moderno y recomendado, ya que evita conflictos con actualizaciones del sistema y mantiene las personalizaciones aisladas.
+    4.  **Previsualización:** Si el visor de imágenes de terminal `viu` está instalado, el script intentará mostrar una vista previa del tema (`preview.png`) directamente en la terminal antes de la instalación.
+-   **Modo No Interactivo:** En modo `--noconfirm`, el script instalará automáticamente el primer tema local que encuentre en la carpeta `themes/sddm/`.
+-   **Desinstalación:** El script `uninstall.sh` llama a `scripts/install-sddm-theme.sh uninstall`, que revierte todos los cambios de forma limpia:
+    -   Elimina el archivo de configuración de `/etc/sddm.conf.d/`.
+    -   Elimina las carpetas de los temas que se copiaron a `/usr/share/sddm/themes/`.
+
+#### `install_grub_theme()`
 -   **Delegación:** Esta función actúa como un controlador que llama a un script más especializado: `scripts/install-grub-theme.sh`. Esto mantiene el script principal más limpio y organizado.
 -   **Lógica:** Presenta un menú para instalar, desinstalar o saltar. En modo no interactivo, instala un tema por defecto.
 
