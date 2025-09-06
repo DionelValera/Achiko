@@ -10,6 +10,9 @@
 # Detener la ejecución si un comando falla
 set -e
 
+# --- Variables Globales ---
+AUR_HELPER=""
+# ----------------------------------------------------------------------------
 # --- Lógica de Animaciones de Carga (Integrada) ---
 # Las funciones y definiciones de animación están incluidas directamente en este script.
 
@@ -57,9 +60,7 @@ BLA::stop_loading_animation() {
 
 # Asegurarse de que la animación se detenga si el script es interrumpido
 trap 'BLA::stop_loading_animation; exit 1' SIGINT
-
-# --- Variables Globales ---
-AUR_HELPER=""
+# -------------------------------------------------------------------------------
 
 # --- Funciones de Utilidad ---
 log() {
@@ -81,45 +82,31 @@ confirm_action() {
     [[ -z "$REPLY" || ! "$REPLY" =~ ^[Nn]$ ]]
 }
 
-nuke_yay_traces() {
-    log "Iniciando limpieza profunda de instalaciones previas de 'yay'..."
+# nuke_yay_traces() {
+#     log "Iniciando limpieza profunda de instalaciones previas de 'yay'..."
     
-    log "  -> Desinstalando paquetes 'yay', 'yay-bin' y sus derivados..."
-    pacman -Rns --noconfirm yay yay-bin yay-debug yay-bin-debug &> /dev/null || true
+#     log "  -> Desinstalando paquetes 'yay', 'yay-bin' y sus derivados..."
+#     pacman -Rns --noconfirm yay yay-bin yay-debug yay-bin-debug &> /dev/null || true
 
-    local SUDO_USER_NAME=${SUDO_USER:?SUDO_USER no está definido.}
-    local HOME_DIR="/home/$SUDO_USER_NAME"
-    log "  -> Eliminando directorios de configuración y caché del usuario..."
-    sudo -u "$SUDO_USER_NAME" rm -rf "$HOME_DIR/.config/yay"
-    sudo -u "$SUDO_USER_NAME" rm -rf "$HOME_DIR/.cache/yay"
-}
+#     local SUDO_USER_NAME=${SUDO_USER:?SUDO_USER no está definido.}
+#     local HOME_DIR="/home/$SUDO_USER_NAME"
+#     log "  -> Eliminando directorios de configuración y caché del usuario..."
+#     sudo -u "$SUDO_USER_NAME" rm -rf "$HOME_DIR/.config/yay"
+#     sudo -u "$SUDO_USER_NAME" rm -rf "$HOME_DIR/.cache/yay"
+# }
 
-nuke_paru_traces() {
-    log "Iniciando limpieza profunda de instalaciones previas de 'paru'..."
+# nuke_paru_traces() {
+#     log "Iniciando limpieza profunda de instalaciones previas de 'paru'..."
     
-    log "  -> Desinstalando paquetes 'paru', 'paru-bin' y sus derivados..."
-    pacman -Rns --noconfirm paru paru-bin &> /dev/null || true
+#     log "  -> Desinstalando paquetes 'paru', 'paru-bin' y sus derivados..."
+#     pacman -Rns --noconfirm paru paru-bin &> /dev/null || true
 
-    local SUDO_USER_NAME=${SUDO_USER:?SUDO_USER no está definido.}
-    local HOME_DIR="/home/$SUDO_USER_NAME"
-    log "  -> Eliminando directorios de configuración y caché del usuario..."
-    sudo -u "$SUDO_USER_NAME" rm -rf "$HOME_DIR/.config/paru"
-    sudo -u "$SUDO_USER_NAME" rm -rf "$HOME_DIR/.cache/paru"
-}
-# --- Verificaciones Iniciales ---
-log "Iniciando verificaciones del sistema..."
-
-# 1. Asegurarse de que el script se ejecute como root
-if [[ "$EUID" -ne 0 ]]; then
-  error "Este script necesita privilegios de root. Por favor, ejecútalo con 'sudo'."
-fi
-
-# 2. Verificar conexión a internet
-if ! ping -c 1 -W 1 archlinux.org &> /dev/null; then
-    error "No se detectó conexión a internet. Por favor, conéctate a una red para continuar."
-fi
-
-log "Verificaciones completadas. Iniciando instalación..."
+#     local SUDO_USER_NAME=${SUDO_USER:?SUDO_USER no está definido.}
+#     local HOME_DIR="/home/$SUDO_USER_NAME"
+#     log "  -> Eliminando directorios de configuración y caché del usuario..."
+#     sudo -u "$SUDO_USER_NAME" rm -rf "$HOME_DIR/.config/paru"
+#     sudo -u "$SUDO_USER_NAME" rm -rf "$HOME_DIR/.cache/paru"
+# }
 
 # --- Fases de Instalación ---
 
@@ -440,6 +427,21 @@ configure_services() {
     systemctl enable sddm
     systemctl enable bluetooth
 }
+
+# --- Verificaciones Iniciales ---
+log "Iniciando verificaciones del sistema..."
+
+# 1. Asegurarse de que el script se ejecute como root
+if [[ "$EUID" -ne 0 ]]; then
+  error "Este script necesita privilegios de root. Por favor, ejecútalo con 'sudo'."
+fi
+
+# 2. Verificar conexión a internet
+if ! ping -c 1 -W 1 8.8.8.8 &> /dev/null; then
+    error "No se detectó conexión a internet. Por favor, conéctate a una red para continuar."
+fi
+
+log "Verificaciones completadas. Iniciando instalación..."
 
 # --- Lógica Principal de Ejecución ---
 main() {
