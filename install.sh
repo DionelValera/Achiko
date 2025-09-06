@@ -264,7 +264,7 @@ install_aur_packages() {
     log "Instalando paquetes desde AUR con '$AUR_HELPER'..."
     local packages=(
         vscodium-bin vscodium-bin-marketplace speedtest-go
-        # waydroid zen-browser-bin
+        viu # Visor de imágenes para la terminal, para previsualizaciones
     )
 
     local to_install=()
@@ -370,6 +370,43 @@ install_grub_theme() {
     done
 }
 
+install_sddm_theme() {
+    log "Configuración del tema de SDDM"
+
+    local SDDM_SCRIPT_PATH="scripts/install-sddm-theme.sh"
+
+    if [ ! -f "$SDDM_SCRIPT_PATH" ]; then
+        error "No se encontró el script '$SDDM_SCRIPT_PATH'."
+    fi
+    
+    chmod +x "$SDDM_SCRIPT_PATH"
+
+    if [[ "$NON_INTERACTIVE" == "true" ]]; then
+        log "Modo no interactivo: Instalando tema de SDDM predeterminado..."
+        # Llama al script del tema con el flag noconfirm.
+        # El script seleccionará el primer tema que encuentre.
+        ./"$SDDM_SCRIPT_PATH" install "" --noconfirm
+        return
+    fi
+
+    PS3=$'\n\e[1;33m¿Qué deseas hacer con el tema de SDDM? (introduce el número): \e[0m'
+    options=(
+        "Instalar un tema para SDDM"
+        "Omitir este paso"
+    )
+    select opt in "${options[@]}"; do
+        case $REPLY in
+            1)
+                ./"$SDDM_SCRIPT_PATH" install
+                break ;;
+            2)
+                log "Omitiendo la configuración del tema de SDDM."
+                break ;;
+            *) echo -e "\e[31mOpción inválida. Inténtalo de nuevo.\e[0m";;
+        esac
+    done
+}
+
 copy_dotfiles() {
     log "Iniciando la gestión de dotfiles con enlaces simbólicos..."
     
@@ -455,6 +492,10 @@ main() {
     fi
     if confirm_action "Paso 6: ¿Instalar la configuración de Project Achiko (dotfiles)?"; then
         copy_dotfiles
+    fi
+
+    if confirm_action "Paso 7: ¿Configurar un tema para el gestor de inicio de sesión (SDDM)?"; then
+        install_sddm_theme
     fi
 
     install_grub_theme # Esta función ya es interactiva y tiene su propia lógica

@@ -102,6 +102,22 @@ revert_grub_theme() {
     fi
 }
 
+revert_sddm_theme() {
+    log "Restaurando la configuración de SDDM..."
+    local SDDM_SCRIPT_PATH="scripts/install-sddm-theme.sh"
+
+    if [ ! -f "$SDDM_SCRIPT_PATH" ]; then
+        log "\e[1;33mADVERTENCIA: No se encontró el script '$SDDM_SCRIPT_PATH'. No se puede revertir el tema de SDDM.\e[0m"
+        return
+    fi
+
+    if confirm_action "¿Deseas desinstalar el tema de SDDM y restaurar la configuración por defecto?"; then
+        ./"$SDDM_SCRIPT_PATH" uninstall
+    else
+        log "Se omitió la restauración de SDDM."
+    fi
+}
+
 # --- Lógica Principal de Ejecución ---
 main() {
     # Procesar argumentos de línea de comandos
@@ -123,6 +139,7 @@ main() {
     fi
 
     restore_dotfiles
+    revert_sddm_theme
     revert_grub_theme
 
     log "\e[1;32m¡Desinstalación de la configuración completada!\e[0m"
