@@ -86,35 +86,21 @@ restore_dotfiles() {
     fi
 }
 
-revert_grub_theme() {
-    log "Restaurando la configuración de GRUB..."
-    local GRUB_SCRIPT_PATH="scripts/install-grub-theme.sh"
+revert_component() {
+    local component_name="$1" # e.g., "GRUB" or "SDDM"
+    local script_path="$2"    # e.g., "scripts/install-grub-theme.sh"
 
-    if [ ! -f "$GRUB_SCRIPT_PATH" ]; then
-        log "\e[1;33mADVERTENCIA: No se encontró el script '$GRUB_SCRIPT_PATH'. No se puede revertir el tema de GRUB.\e[0m"
+    log "Restaurando la configuración de $component_name..."
+
+    if [ ! -f "$script_path" ]; then
+        log "\e[1;33mADVERTENCIA: No se encontró el script '$script_path'. No se puede revertir la configuración de $component_name.\e[0m"
         return
     fi
 
-    if confirm_action "¿Deseas desinstalar el tema de GRUB y restaurar la configuración por defecto?"; then
-        ./"$GRUB_SCRIPT_PATH" uninstall
+    if confirm_action "¿Deseas desinstalar la configuración de $component_name y restaurar los valores por defecto?"; then
+        ./"$script_path" uninstall
     else
-        log "Se omitió la restauración de GRUB."
-    fi
-}
-
-revert_sddm_theme() {
-    log "Restaurando la configuración de SDDM..."
-    local SDDM_SCRIPT_PATH="scripts/install-sddm-theme.sh"
-
-    if [ ! -f "$SDDM_SCRIPT_PATH" ]; then
-        log "\e[1;33mADVERTENCIA: No se encontró el script '$SDDM_SCRIPT_PATH'. No se puede revertir el tema de SDDM.\e[0m"
-        return
-    fi
-
-    if confirm_action "¿Deseas desinstalar el tema de SDDM y restaurar la configuración por defecto?"; then
-        ./"$SDDM_SCRIPT_PATH" uninstall
-    else
-        log "Se omitió la restauración de SDDM."
+        log "Se omitió la restauración de $component_name."
     fi
 }
 
@@ -139,8 +125,8 @@ main() {
     fi
 
     restore_dotfiles
-    revert_sddm_theme
-    revert_grub_theme
+    revert_component "SDDM" "scripts/install-sddm-theme.sh"
+    revert_component "GRUB" "scripts/install-grub-theme.sh"
 
     log "\e[1;32m¡Desinstalación de la configuración completada!\e[0m"
 }

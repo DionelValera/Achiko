@@ -9,6 +9,8 @@ readonly THEMES_DIR="/usr/share/sddm/themes"
 readonly LOCAL_THEMES_PATH="../themes/sddm" # Ruta a los temas locales en el repo
 readonly SDDM_CONFIG_DIR="/etc/sddm.conf.d"
 readonly CONFIG_FILE="$SDDM_CONFIG_DIR/achiko-theme.conf"
+readonly SILENT_SDDM_REPO_URL="https://github.com/uiriansan/SilentSDDM.git"
+readonly SILENT_SDDM_TMP_DIR="/tmp/silent-sddm-theme"
 
 # --- Funciones de Utilidad ---
 log() {
@@ -18,6 +20,13 @@ log() {
 error() {
     echo -e "\n\e[1;31mERROR: $1\e[0m" >&2
     exit 1
+}
+
+cleanup() {
+    if [ -d "$SILENT_SDDM_TMP_DIR" ]; then
+        log "Limpiando archivos temporales..."
+        rm -rf "$SILENT_SDDM_TMP_DIR"
+    fi
 }
 
 # Detecta la resolución de la pantalla principal
@@ -90,86 +99,141 @@ configure_sddm_resolution() {
     echo -e "\n[X11]\nServerArguments=-nolisten tcp -dpi $dpi" >> "$CONFIG_FILE"
 }
 
+apply_sddm_theme_config() {
+    local theme_name="$1"
+    local non_interactive="$2"
+
+    log "Configurando SDDM para usar el nuevo tema..."
+    mkdir -p "$SDDM_CONFIG_DIR"
+    echo -e "[Theme]\nCurrent=$theme_name" > "$CONFIG_FILE"
+
+    log "\e[1;32m¡Tema de SDDM '$theme_name' instalado con éxito!\e[0m"
+
+    # Llamada a la nueva función para configurar la resolución
+    configure_sddm_resolution "$non_interactive"
+}
+
+install_local_theme() {
+    local theme_name="$1"
+    local non_interactive="$2"
+
+    local source_dir="$LOCAL_THEMES_PATH/$theme_name"
+    local dest_dir="$THEMES_DIR/$theme_name"
+
+    if [ ! -d "$source_dir" ]; then
+        error "El directorio del tema '$source_dir' no existe."
+    fi
+
+    log "Instalando el tema local '$theme_name' en '$dest_dir'..."
+    rm -rf "$dest_dir"
+    mkdir -p "$(dirname "$dest_dir")"
+    cp -a --no-preserve=ownership "$source_dir" "$dest_dir"
+
+    apply_sddm_theme_config "$theme_name" "$non_interactive"
+}
+
+install_silent_sddm_theme() {
+    local non_interactive="$1"
+    log "Iniciando la instalación del tema Silent-SDDM desde Internet."
+
+    if ! command -v git &> /dev/null; then
+        error "'git' no está instalado. Por favor, instálalo para continuar (ej: sudo pacman -S git)."
+    fi
+
+    if [ ! -d "$SILENT_SDDM_TMP_DIR" ]; then
+        log "Clonando el repositorio del tema..."
+        git clone "$SILENT_SDDM_REPO_URL" "$SILENT_SDDM_TMP_DIR" --depth 1
+    fi
+
+    local theme_name="Silent-SDDM"
+    log "Instalando el tema en '$THEMES_DIR'..."
+    local dest_dir="$THEMES_DIR/$theme_name"
+    rm -rf "$dest_dir"
+    mkdir -p "$dest_dir"
+    
+    # Copiar los recursos del tema, excluyendo archivos de repo como README, .git, etc.
+    cp -a --no-preserve=ownership "$SILENT_SDDM_TMP_DIR"/{Main.qml,Login.qml,components,images} "$dest_dir/"
+
+    # El tema original no incluye un theme.conf, así que lo creamos.
+    log "Creando el archivo de manifiesto 'theme.conf'..."
+    cat > "$dest_dir/theme.conf" <<EOF
+[General]
+name=Silent-SDDM
+author=uiriansan
+version=1.0
+description=A silent and minimal theme for SDDM.
+EOF
+
+    apply_sddm_theme_config "$theme_name" "$non_interactive"
+}
+
 # --- Lógica de Instalación ---
 
 install_theme() {
     local theme_to_install="$1"
     local non_interactive="$2"
 
-    if [ ! -d "$LOCAL_THEMES_PATH" ] || [ -z "$(ls -A "$LOCAL_THEMES_PATH")" ]; then
-        log "\e[1;33mADVERTENCIA: No se encontró el directorio de temas locales '$LOCAL_THEMES_PATH' o está vacío. Omitiendo.\e[0m"
+    if [[ "$non_interactive" == "--noconfirm" ]]; then
+        # Modo no interactivo: instalar el primer tema local encontrado
+        if [ ! -d "$LOCAL_THEMES_PATH" ] || [ -z "$(ls -A "$LOCAL_THEMES_PATH")" ]; then
+            log "\e[1;33mADVERTENCIA: No se encontraron temas locales. Omitiendo instalación de tema SDDM en modo no interactivo.\e[0m"
+            return
+        fi
+        local theme_name
+        theme_name=$(basename "$(find "$LOCAL_THEMES_PATH" -mindepth 1 -maxdepth 1 -type d | head -n 1)")
+        log "Modo no interactivo: Instalando el primer tema local encontrado: '$theme_name'"
+        install_local_theme "$theme_name" "$non_interactive"
         return
     fi
 
-    local selected_theme_name
-    if [[ "$non_interactive" == "--noconfirm" ]]; then
-        if [ -z "$theme_to_install" ]; then
-            # Si es no interactivo y no se especifica un tema, usar el primero que encuentre
-            selected_theme_name=$(basename "$(find "$LOCAL_THEMES_PATH" -mindepth 1 -maxdepth 1 -type d | head -n 1)")
-            log "Modo no interactivo: Instalando el primer tema encontrado: '$selected_theme_name'"
-        else
-            selected_theme_name="$theme_to_install"
-            log "Modo no interactivo: Instalando tema especificado: '$selected_theme_name'"
-        fi
-    else
-        # Modo interactivo
-        local options=()
-        while IFS= read -r -d '' theme_dir; do
-            options+=("$(basename "$theme_dir")")
-        done < <(find "$LOCAL_THEMES_PATH" -mindepth 1 -maxdepth 1 -type d -print0)
-        options+=("Cancelar")
+    # Modo interactivo
+    log "Selección de tema de SDDM para instalar."
 
-        PS3=$'\n\e[1;33m¿Qué tema de SDDM deseas instalar? (introduce el número): \e[0m'
-        select opt in "${options[@]}"; do
-            if [[ "$opt" == "Cancelar" ]]; then
+    local options=()
+    # Buscar temas locales
+    if [ -d "$LOCAL_THEMES_PATH" ] && [ -n "$(ls -A "$LOCAL_THEMES_PATH")" ]; then
+        log "Detectando temas locales..."
+        while IFS= read -r -d '' theme_dir; do
+            options+=("$(basename "$theme_dir") (Local)")
+        done < <(find "$LOCAL_THEMES_PATH" -mindepth 1 -maxdepth 1 -type d -print0)
+    fi
+
+    options+=("Instalar Silent-SDDM (Desde Internet)")
+    options+=("Cancelar")
+
+    PS3=$'\n\e[1;33m¿Qué tema de SDDM deseas instalar? (introduce el número): \e[0m'
+    select opt in "${options[@]}"; do
+        case "$opt" in
+            "")
+                echo -e "\e[31mOpción inválida. Inténtalo de nuevo.\e[0m"
+                ;;
+            "Cancelar")
                 log "Instalación cancelada."
                 return
-            elif [ -n "$opt" ]; then
-                selected_theme_name="$opt"
-
-                # --- INICIO: Lógica de Previsualización ---
+                ;;
+            "Instalar Silent-SDDM (Desde Internet)")
+                install_silent_sddm_theme "false"
+                break
+                ;;
+            *) # Tema local
+                local theme_name
+                theme_name=$(echo "$opt" | sed 's/ (Local)$//')
+                
+                # --- Lógica de Previsualización ---
                 if command -v viu &> /dev/null; then
-                    local preview_file="$LOCAL_THEMES_PATH/$selected_theme_name/preview.png"
+                    local preview_file="$LOCAL_THEMES_PATH/$theme_name/preview.png"
                     if [ -f "$preview_file" ]; then
-                        echo -e "\n\e[1;33mMostrando previsualización para '$selected_theme_name'. Presiona Ctrl+C para continuar con la instalación...\e[0m"
-                        # Usamos un subshell y trap para que Ctrl+C solo salga de la previsualización
+                        echo -e "\n\e[1;33mMostrando previsualización para '$theme_name'. Presiona Ctrl+C para continuar con la instalación...\e[0m"
                         (trap 'exit 0' SIGINT; viu -b "$preview_file"; sleep 60) || true
                         clear # Limpia la pantalla después de la previsualización
                     fi
                 fi
-                # --- FIN: Lógica de Previsualización ---
-
+                
+                install_local_theme "$theme_name" "false"
                 break
-            else
-                echo -e "\e[31mOpción inválida. Inténtalo de nuevo.\e[0m"
-            fi
-        done
-    fi
-
-    if [ -z "$selected_theme_name" ]; then
-        error "No se seleccionó ningún tema."
-    fi
-
-    local source_dir="$LOCAL_THEMES_PATH/$selected_theme_name"
-    local dest_dir="$THEMES_DIR/$selected_theme_name"
-
-    if [ ! -d "$source_dir" ]; then
-        error "El directorio del tema '$source_dir' no existe."
-    fi
-
-    log "Instalando el tema '$selected_theme_name' en '$dest_dir'..."
-    rm -rf "$dest_dir"
-    mkdir -p "$(dirname "$dest_dir")"
-    cp -a --no-preserve=ownership "$source_dir" "$dest_dir"
-
-    log "Configurando SDDM para usar el nuevo tema..."
-    mkdir -p "$SDDM_CONFIG_DIR"
-    echo -e "[Theme]\nCurrent=$selected_theme_name" > "$CONFIG_FILE"
-
-    log "\e[1;32m¡Tema de SDDM '$selected_theme_name' instalado con éxito!\e[0m"
-
-    # Llamada a la nueva función para configurar la resolución
-    configure_sddm_resolution "$non_interactive"
+                ;;
+        esac
+    done
 }
 
 uninstall_theme() {
@@ -196,6 +260,13 @@ uninstall_theme() {
         done < <(find "$LOCAL_THEMES_PATH" -mindepth 1 -maxdepth 1 -type d -print0)
     fi
 
+    # 3. Eliminar el tema de internet (Silent-SDDM)
+    local silent_sddm_path="$THEMES_DIR/Silent-SDDM"
+    if [ -d "$silent_sddm_path" ]; then
+        log "  -> Eliminando tema de internet instalado: 'Silent-SDDM'"
+        rm -rf "$silent_sddm_path"
+    fi
+
     log "\e[1;32m¡Desinstalación de temas de SDDM completada!\e[0m"
     echo "SDDM usará su tema por defecto. Puede que necesites reiniciar para ver los cambios."
 }
@@ -204,6 +275,9 @@ uninstall_theme() {
 if [[ "$EUID" -ne 0 ]]; then
   error "Este script necesita privilegios de root. Por favor, ejecútalo con 'sudo'."
 fi
+
+# Registrar la función de limpieza para que se ejecute al salir
+trap cleanup EXIT
 
 # --- Lógica de Ejecución ---
 case "$1" in
