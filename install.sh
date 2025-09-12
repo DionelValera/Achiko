@@ -195,7 +195,7 @@ install_aur_helper() {
         rm -rf "$PARU_DIR"
 
         log "Clonando el repositorio de 'paru'..."
-        sudo -u "$SUDO_USER_NAME" git clone https://aur.archlinux.org/paru.git "$PARU_DIR"
+        sudo -u "$SUDO_USER_NAME" git clone https://aur.archlinux.org/paru.git --depth=1 "$PARU_DIR"
 
         log "Compilando e instalando 'paru' (puede solicitar contraseña sudo)..."
         # Se usa --overwrite '*' para forzar la instalación y evitar errores de archivos en conflicto.
@@ -223,7 +223,7 @@ install_aur_helper() {
         rm -rf "$YAY_DIR"
  
         log "Clonando el repositorio de 'yay'..."
-        sudo -u "$SUDO_USER_NAME" git clone https://aur.archlinux.org/yay.git "$YAY_DIR"
+        sudo -u "$SUDO_USER_NAME" git clone https://aur.archlinux.org/yay.git --depth=1"$YAY_DIR"
 
         log "Compilando e instalando 'yay' (puede solicitar contraseña sudo)..."
         # Se usa --overwrite '*' para forzar la instalación y evitar errores de archivos en conflicto.
