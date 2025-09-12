@@ -39,7 +39,6 @@ BLA::play_loading_animation_loop() {
     done
   done
 }
-
 BLA::start_loading_animation() {
   BLA_active_loading_animation=( "${@}" )
   BLA_loading_animation_frame_interval="${BLA_active_loading_animation[0]}"
@@ -48,7 +47,6 @@ BLA::start_loading_animation() {
   BLA::play_loading_animation_loop &
   BLA_loading_animation_pid="${!}"
 }
-
 BLA::stop_loading_animation() {
   # Verificar si el PID existe antes de intentar matarlo
   if [ -n "$BLA_loading_animation_pid" ] && ps -p "$BLA_loading_animation_pid" > /dev/null; then
@@ -57,25 +55,21 @@ BLA::stop_loading_animation() {
   printf "\n"
   tput cnorm # Restore the terminal cursor
 }
-
 # Asegurarse de que la animación se detenga si el script es interrumpido
 trap 'BLA::stop_loading_animation; exit 1' SIGINT
 # -------------------------------------------------------------------------------
 
 # --- Funciones de Utilidad ---
-log() {
-    # Imprime un mensaje de log con formato
+log() { # Imprime un mensaje de log con formato
     echo -e "\n\e[1;34m=> $1\e[0m"
 }
 
-error() {
-    # Imprime un mensaje de error y sale del script
+error() { # Imprime un mensaje de error y sale del script
     echo -e "\n\e[1;31mERROR: $1\e[0m" >&2
     exit 1
 }
 
-confirm_action() {
-    # Si estamos en modo no interactivo, siempre retorna éxito (sí)
+confirm_action() { # Si estamos en modo no interactivo, siempre retorna éxito (sí)
     [[ "$NON_INTERACTIVE" == "true" ]] && return 0
     # Cambiado para que Enter signifique 'sí'
     read -p "$1 [Y/n]: " -r
@@ -92,9 +86,9 @@ update_system() {
 install_pacman_packages() {
     log "Instalando paquetes esenciales desde los repositorios oficiales..."
     local packages=(
-        hyprland sddm ark kate dolphin okular gwenview libreoffice-still libreoffice-still-es git curl python 
-        npm chromium vivaldi nautilus gvfs-mtp vlc fastfetch flatpak bluez bluez-utils qt6-multimedia 
-        qt6-virtualkeyboard qt6-svg baobab base base-devel btrfs-progs decibels epiphany evince fish
+    hyprland sddm ark kate dolphin okular gwenview libreoffice-still libreoffice-still-es git curl python 
+    npm chromium vivaldi nautilus gvfs-mtp vlc fastfetch flatpak bluez bluez-utils qt6-multimedia 
+    qt6-virtualkeyboard qt6-svg baobab base base-devel btrfs-progs decibels epiphany evince fish
 	gdm git github-cli gnome-backgrounds gnome-calculator gnome-calendar gnome-characters gnome-clocks
 	gnome-color-manager gnome-connections gnome-console gnome-contacts gnome-control-center 
 	gnome-disk-utility gnome-font-viewer gnome-keyring gnome-logs gnome-maps gnome-menus gnome-music 
@@ -248,10 +242,8 @@ install_aur_packages() {
         log "Todos los paquetes de AUR ya están instalados. Omitiendo."
         return
     fi
-
     # El asistente de AUR no debe ejecutarse como root.
     log "Instalando: ${to_install[*]} (puede solicitar contraseña o revisión del PKGBUILD)"
-    # La animación se detiene aquí para permitir la interacción con el asistente de AUR.
     # El flag --needed evita reinstalaciones innecesarias.
     sudo -u "$SUDO_USER_NAME" "$AUR_HELPER" -S --noconfirm --needed "${to_install[@]}"
     log "Instalación de paquetes de AUR completada."
