@@ -82,46 +82,31 @@ confirm_action() {
     [[ -z "$REPLY" || ! "$REPLY" =~ ^[Nn]$ ]]
 }
 
-# nuke_yay_traces() {
-#     log "Iniciando limpieza profunda de instalaciones previas de 'yay'..."
-    
-#     log "  -> Desinstalando paquetes 'yay', 'yay-bin' y sus derivados..."
-#     pacman -Rns --noconfirm yay yay-bin yay-debug yay-bin-debug &> /dev/null || true
-
-#     local SUDO_USER_NAME=${SUDO_USER:?SUDO_USER no está definido.}
-#     local HOME_DIR="/home/$SUDO_USER_NAME"
-#     log "  -> Eliminando directorios de configuración y caché del usuario..."
-#     sudo -u "$SUDO_USER_NAME" rm -rf "$HOME_DIR/.config/yay"
-#     sudo -u "$SUDO_USER_NAME" rm -rf "$HOME_DIR/.cache/yay"
-# }
-
-# nuke_paru_traces() {
-#     log "Iniciando limpieza profunda de instalaciones previas de 'paru'..."
-    
-#     log "  -> Desinstalando paquetes 'paru', 'paru-bin' y sus derivados..."
-#     pacman -Rns --noconfirm paru paru-bin &> /dev/null || true
-
-#     local SUDO_USER_NAME=${SUDO_USER:?SUDO_USER no está definido.}
-#     local HOME_DIR="/home/$SUDO_USER_NAME"
-#     log "  -> Eliminando directorios de configuración y caché del usuario..."
-#     sudo -u "$SUDO_USER_NAME" rm -rf "$HOME_DIR/.config/paru"
-#     sudo -u "$SUDO_USER_NAME" rm -rf "$HOME_DIR/.cache/paru"
-# }
-
 # --- Fases de Instalación ---
 
 update_system() {
     log "Actualizando el sistema con Pacman... (esto puede tardar unos minutos)"
-    pacman -Syyu --noconfirm
+    pacman -Syyuu --noconfirm
 }
 
 install_pacman_packages() {
     log "Instalando paquetes esenciales desde los repositorios oficiales..."
     local packages=(
-        hyprland sddm ark kate dolphin okular gwenview
-        libreoffice-still libreoffice-still-es git curl python npm
-        chromium vivaldi nautilus gvfs-mtp vlc fastfetch flatpak
-        bluez bluez-utils qt6-multimedia qt6-virtualkeyboard qt6-svg
+        hyprland sddm ark kate dolphin okular gwenview libreoffice-still libreoffice-still-es git curl python 
+        npm chromium vivaldi nautilus gvfs-mtp vlc fastfetch flatpak bluez bluez-utils qt6-multimedia 
+        qt6-virtualkeyboard qt6-svg baobab base base-devel btrfs-progs decibels epiphany evince fish
+	gdm git github-cli gnome-backgrounds gnome-calculator gnome-calendar gnome-characters gnome-clocks
+	gnome-color-manager gnome-connections gnome-console gnome-contacts gnome-control-center 
+	gnome-disk-utility gnome-font-viewer gnome-keyring gnome-logs gnome-maps gnome-menus gnome-music 
+	gnome-remote-desktop gnome-session gnome-settings-daemon gnome-shell gnome-software gnome-system-monitor
+	gnome-text-editor gnome-tour gnome-tweaks gnome-user-docs gnome-user-share gnome-weather grilo-plugins 
+	grub gst-plugin-pipewire gvfs gvfs-afc gvfs-dnssd gvfs-goa gvfs-google gvfs-gphoto2 gvfs-mtp gvfs-nfs
+	gvfs-onedrive gvfs-smb gvfs-wsdd htop intel-media-driver intel-ucode iwd libpulse libva-intel-driver
+	linux linux-firmware loupe malcontent nano nautilus neovim network-manager-applet networkmanager orca
+	pipewire pipewire-alsa pipewire-jack pipewire-pulse rygel simple-scan smartmontools snapshot sushi tecla
+	totem vulkan-intel vulkan-nouveau vulkan-radeon wget wireless_tools wireplumber xdg-desktop-portal-gnome
+	xdg-user-dirs-gtk xdg-utils xf86-video-amdgpu xf86-video-ati xf86-video-nouveau xorg-server xorg-xinit
+	yelp zram-generator
     )
     
     # Filtrar paquetes que ya están instalados
@@ -129,7 +114,7 @@ install_pacman_packages() {
     for pkg in "${packages[@]}"; do
         if ! pacman -Q "$pkg" &> /dev/null; then
             to_install+=("$pkg")
-        fi
+        fi  
     done
 
     if [ ${#to_install[@]} -eq 0 ]; then
@@ -188,9 +173,7 @@ install_aur_helper() {
             pacman -Rns --noconfirm rust
         fi
         pacman -S --needed --noconfirm git base-devel rustup
-        
-        nuke_paru_traces
-
+             
         local PARU_DIR="/tmp/paru-build"
         rm -rf "$PARU_DIR"
 
@@ -203,7 +186,7 @@ install_aur_helper() {
             cd "$PARU_DIR" && \
             sudo -u "$SUDO_USER_NAME" rustup override set stable && \
             sudo -u "$SUDO_USER_NAME" rustup update stable && \
-            sudo -u "$SUDO_USER_NAME" makepkg -s --noconfirm && \
+            sudo -u "$SUDO_USER_NAME" makepkg -si --noconfirm && \
             sudo pacman -U --noconfirm --overwrite '*' paru-*.pkg.tar.zst
         )
         rm -rf "$PARU_DIR"
@@ -223,13 +206,13 @@ install_aur_helper() {
         rm -rf "$YAY_DIR"
  
         log "Clonando el repositorio de 'yay'..."
-        sudo -u "$SUDO_USER_NAME" git clone https://aur.archlinux.org/yay.git --depth=1"$YAY_DIR"
+        sudo -u "$SUDO_USER_NAME" git clone https://aur.archlinux.org/yay.git --depth=1 "$YAY_DIR"
 
         log "Compilando e instalando 'yay' (puede solicitar contraseña sudo)..."
         # Se usa --overwrite '*' para forzar la instalación y evitar errores de archivos en conflicto.
         (
             cd "$YAY_DIR" && \
-            sudo -u "$SUDO_USER_NAME" makepkg -s --noconfirm && \
+            sudo -u "$SUDO_USER_NAME" makepkg -si --noconfirm && \
             sudo pacman -U --noconfirm --overwrite '*' yay-*.pkg.tar.zst
         )
         rm -rf "$YAY_DIR"
@@ -250,7 +233,7 @@ install_aur_packages() {
 
     log "Instalando paquetes desde AUR con '$AUR_HELPER'..."
     local packages=(
-        vscodium-bin vscodium-bin-marketplace speedtest-go
+        visual-studio-code-bin github-desktop speedtest-go
         viu # Visor de imágenes para la terminal, para previsualizaciones
     )
 
