@@ -104,20 +104,20 @@ install_pacman_packages() {
     )
     
     # Filtrar paquetes que ya están instalados
-    local to_install=()
-    for pkg in "${packages[@]}"; do
-        if ! pacman -Q "$pkg" &> /dev/null; then
-            to_install+=("$pkg")
-        fi  
-    done
+    # local to_install=()
+    # for pkg in "${packages[@]}"; do
+    #     if ! pacman -Q "$pkg" &> /dev/null; then
+    #         to_install+=("$pkg")
+    #     fi  
+    # done
 
-    if [ ${#to_install[@]} -eq 0 ]; then
-        log "Todos los paquetes de Pacman ya están instalados. Omitiendo."
-        return
-    fi
-
+    # if [ ${#to_install[@]} -eq 0 ]; then
+    #     log "Todos los paquetes de Pacman ya están instalados. Omitiendo."
+    #     return
+    # fi
     log "Instalando: ${to_install[*]}"
-    pacman -S --noconfirm --needed "${to_install[@]}"
+    pacman -S --noconfirm --needed "${packages[@]}"
+    log "Instalación de paquetes desde Pacman completado!"
 }
 
 install_aur_helper() {
@@ -430,6 +430,7 @@ main() {
     if confirm_action "Paso 1: ¿Actualizar el sistema y los repositorios? (Recomendado)"; then
         update_system
     fi
+
     if confirm_action "Paso 2: ¿Instalar paquetes esenciales de Pacman?"; then
         install_pacman_packages
     fi
@@ -454,6 +455,7 @@ main() {
     if confirm_action "Paso 5: ¿Instalar aplicaciones de Flatpak?"; then
         install_flatpak_packages
     fi
+
     if confirm_action "Paso 6: ¿Instalar la configuración de Project Achiko (dotfiles)?"; then
         copy_dotfiles
     fi
