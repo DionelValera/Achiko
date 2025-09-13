@@ -1,0 +1,143 @@
+##muchas gracias, eres un grande, me encanta
+
+# --- Entorno Base y Kernel ---
+base
+base-devel
+linux
+linux-firmware
+intel-ucode
+
+# --- Gestores de Arranque e Inicio de Sesión ---
+grub
+sddm
+gdm
+
+# --- Entorno de Escritorio y Servidor Gráfico ---
+hyprland
+gnome-shell
+gnome-session
+xorg-server
+xorg-xinit
+
+# --- Paquetes del Ecosistema GNOME ---
+epiphany
+evince
+gnome-backgrounds
+gnome-calculator
+gnome-calendar
+gnome-characters
+gnome-clocks
+gnome-color-manager
+gnome-connections
+gnome-console
+gnome-contacts
+gnome-control-center
+gnome-disk-utility
+gnome-font-viewer
+gnome-keyring
+gnome-logs
+gnome-maps
+gnome-menus
+gnome-music
+gnome-remote-desktop
+gnome-settings-daemon
+gnome-software
+gnome-system-monitor
+gnome-text-editor
+gnome-tour
+gnome-tweaks
+gnome-user-docs
+gnome-user-share
+gnome-weather
+decibels
+loupe
+malcontent
+rygel
+simple-scan
+sushi
+tecla
+totem
+yelp
+
+# --- Aplicaciones de KDE ---
+ark
+kate
+dolphin
+okular
+gwenview
+
+# --- Otras Aplicaciones ---
+libreoffice-still
+libreoffice-still-es
+chromium
+vivaldi
+vlc
+fastfetch
+htop
+nano
+neovim
+
+# --- Desarrollo ---
+git
+github-cli
+curl
+python
+npm
+
+# --- Audio y Video ---
+pipewire
+pipewire-alsa
+pipewire-jack
+pipewire-pulse
+wireplumber
+gst-plugin-pipewire
+libpulse
+
+# --- Red y Conectividad ---
+network-manager-applet
+networkmanager
+iwd
+wireless_tools
+bluez
+bluez-utils
+
+# --- Sistema de Archivos y Discos ---
+btrfs-progs
+gvfs
+gvfs-afc
+gvfs-dnssd
+gvfs-goa
+gvfs-google
+gvfs-gphoto2
+gvfs-mtp
+gvfs-nfs
+gvfs-onedrive
+gvfs-smb
+gvfs-wsdd
+smartmontools
+snapshot
+baobab
+
+# --- Librerías, Portales y Drivers ---
+flatpak
+qt6-multimedia
+qt6-virtualkeyboard
+qt6-svg
+libva-intel-driver
+vulkan-intel
+vulkan-nouveau
+vulkan-radeon
+xdg-desktop-portal-gnome
+xdg-user-dirs-gtk
+xdg-utils
+xf86-video-amdgpu
+xf86-video-ati
+xf86-video-nouveau
+grilo-plugins
+orca
+
+# --- Shells Adicionales ---
+fish
+
+# --- Utilidades del Sistema ---
+zram-generator

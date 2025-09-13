@@ -1,0 +1,13 @@
+# --- Development ---
+# Visual Studio Code (binary release from Microsoft)
+visual-studio-code-bin
+
+# --- Git Clients ---
+# GitHub Desktop client
+github-desktop
+
+# --- Utilities ---
+# Speedtest CLI from Ookla
+speedtest-go
+# Image viewer for the terminal, useful for previews in file managers
+viu

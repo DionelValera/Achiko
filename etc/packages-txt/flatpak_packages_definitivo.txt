@@ -1,0 +1,8 @@
+# Music player with a focus on library management
+io.github.brunofin.Cohesion
+
+# Image viewer and organizer
+app.fotema.Fotema
+
+# Another music player
+com.github.neithern.g4music
