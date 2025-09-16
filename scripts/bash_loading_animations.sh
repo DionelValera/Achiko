@@ -19,7 +19,7 @@ BLA_quarter=( 0.25 ▖ ▘ ▝ ▗ )
 BLA_semi_circle=( 0.1 ◐ ◓ ◑ ◒ )
 BLA_braille=( 0.2 ⠁ ⠂ ⠄ ⡀ ⢀ ⠠ ⠐ ⠈ )
 BLA_braille_whitespace=( 0.2 ⣾ ⣽ ⣻ ⢿ ⡿ ⣟ ⣯ ⣷ )
-BLA_modern_metro=( 0.1 '▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▰▰▰▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▰▰▰▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▰▰▰▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▰▰▰▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▰▰▰▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▰▰▰▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▰▰▰▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▰▰▰▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▰▰▰▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▰▰▰▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▰▰▰▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▰▰▰' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▰▰' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▰' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' )
+BLA_modern_metro=( 0.1 '▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▰▰▰▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▰▰▰▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▰▰▰▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▰▰▰▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▰▰▰▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▰▰▰▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▰▰▰▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▰▰▰▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▰▰▰▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▰▰▰▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▰▰▰▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▰▰▰▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▰▰▰' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▰▰▰' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▰▰' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▰' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' '▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱' )
 BLA_circle_quadrants=( 0.15 '◜' '◝' '◞' '◟' )
 BLA_arc=( 0.15 '◜' '◠' '◝' '◞' '◡' '◟' )
 BLA_vertical_blocks=( 0.1 ' ' '▂' '▃' '▄' '▅' '▆' '▇' '█' '▇' '▆' '▅' '▄' '▃' ' ' )
@@ -65,3 +65,36 @@ BLA::stop_loading_animation() {
 
 # Asegurarse de que la animación se detenga si el script es interrumpido
 trap 'BLA::stop_loading_animation; exit 1' SIGINT
+
+# --- Barra de Progreso ---
+
+# Dibuja una barra de progreso.
+# Uso: BLA::draw_progress_bar 50 "Instalando algo..."
+BLA::draw_progress_bar() {
+    local percentage=${1:-0}
+    local message=${2:-""}
+    # Ancho por defecto de 80 si tput cols falla
+    local cols=${COLUMNS:-$(tput cols 2>/dev/null || echo 80)}
+    # Dejar espacio para el porcentaje y otros caracteres
+    local bar_width=$((cols - 10))
+
+    # Calcular cuántos caracteres de la barra deben estar "llenos"
+    local filled_chars=$((bar_width * percentage / 100))
+
+    # Construir las partes de la barra
+    local filled=""
+    for ((i=0; i<filled_chars; i++)); do filled+="="; done
+    
+    local empty=""
+    local remaining_chars=$((bar_width - filled_chars))
+    for ((i=0; i<remaining_chars; i++)); do empty+=" "; done
+
+    # Imprimir la barra de progreso en una sola línea usando retorno de carro
+    # Limpiar la línea con \033[K antes de dibujar
+    printf "\r\033[K[%s%s] %3d%% %s" "$filled" "$empty" "$percentage" "$message"
+
+    # Si el progreso es 100%, imprimir una nueva línea para no sobreescribir el resultado final
+    if [ "$percentage" -eq 100 ]; then
+        echo ""
+    fi
+}

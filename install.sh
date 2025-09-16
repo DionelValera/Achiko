@@ -47,6 +47,19 @@ confirm_action() {
     [[ -z "$REPLY" || ! "$REPLY" =~ ^[Nn]$ ]]
 }
 
+# --- Verificaciones Iniciales ---
+run_pre_checks() {
+    log "Iniciando verificaciones del sistema..."
+    if [[ "$EUID" -ne 0 ]]; then
+      error "Este script necesita privilegios de root. Por favor, ejecútalo con 'sudo'."
+    fi
+
+    if ! ping -c 1 -W 1 8.8.8.8 &> /dev/null; then
+        error "No se detectó conexión a internet. Conéctate a una red para continuar."
+    fi
+    log "Verificaciones completadas."
+}
+
 # --- Fases de Instalación ---
 
 read_packages_from_file() {
@@ -62,25 +75,39 @@ read_packages_from_file() {
 
 update_system() {
     log "Actualizando el sistema con Pacman..."
-    BLA::start_loading_animation "BLA_braille_whitespace"
-    pacman -Syyu --noconfirm
+    BLA::start_loading_animation "BLA_modern_metro"
+    pacman -Syyu --noconfirm &> /dev/null
     BLA::stop_loading_animation
+    log "Actualización del sistema completada."
 }
 
 install_pacman_packages() {
     log "Instalando paquetes de Pacman desde '$PACMAN_PKGS_FILE'..."
     local packages_to_install=($(read_packages_from_file "$PACMAN_PKGS_FILE"))
+    local total_packages=${#packages_to_install[@]}
 
-    if [ ${#packages_to_install[@]} -eq 0 ]; then
-        log "No hay paquetes de Pacman para instalar. Omitiendo."
+    if [ $total_packages -eq 0 ]; then
+        log "No hay paquetes de Pacman para instalar o el archivo está vacío. Omitiendo."
         return
     fi
 
-    log "Paquetes a instalar: ${packages_to_install[*]}"
-    BLA::start_loading_animation "BLA_braille_whitespace"
-    pacman -S --noconfirm --needed "${packages_to_install[@]}"
-    BLA::stop_loading_animation
-    log "Instalación de paquetes de Pacman completada."
+    log "Se procesarán $total_packages paquetes."
+    
+    local installed_count=0
+    BLA::draw_progress_bar 0 "Iniciando..."
+    sleep 1
+
+    for pkg in "${packages_to_install[@]}"; do
+        pacman -S --noconfirm --needed "$pkg" &> /dev/null
+        
+        installed_count=$((installed_count + 1))
+        local percentage=$((installed_count * 100 / total_packages))
+        
+        BLA::draw_progress_bar $percentage "[$installed_count/$total_packages] Procesando: $pkg"
+    done
+
+    BLA::draw_progress_bar 100 "Instalación de paquetes de Pacman completada."
+    echo
 }
 
 install_aur_helper() {
@@ -114,30 +141,32 @@ install_aur_helper() {
         done
     fi
  
-    log "Instalando dependencias de compilación (git, base-devel)..."
-    pacman -S --needed --noconfirm git base-devel
+    if [[ -n "$choice" ]]; then
+        log "Instalando dependencias de compilación (git, base-devel)..."
+        pacman -S --needed --noconfirm git base-devel &> /dev/null
 
-    local BUILD_DIR="/tmp/$choice-build"
-    rm -rf "$BUILD_DIR"
-    log "Clonando 'aur.archlinux.org/$choice.git' en '$BUILD_DIR' கிலோ"
-    sudo -u "$SUDO_USER_NAME" git clone "https://aur.archlinux.org/$choice.git" --depth=1 "$BUILD_DIR"
+        local BUILD_DIR="/tmp/$choice-build"
+        rm -rf "$BUILD_DIR"
+        log "Clonando 'aur.archlinux.org/$choice.git' en '$BUILD_DIR'..."
+        sudo -u "$SUDO_USER_NAME" git clone "https://aur.archlinux.org/$choice.git" --depth=1 "$BUILD_DIR"
 
-    log "Compilando e instalando '$choice' கிலோ"
-    pushd "$BUILD_DIR" > /dev/null
-    if [[ "$choice" == "paru" ]]; then
-        pacman -S --needed --noconfirm rustup
-        sudo -u "$SUDO_USER_NAME" rustup override set stable
-        sudo -u "$SUDO_USER_NAME" rustup update stable
-    elif [[ "$choice" == "yay" ]]; then
-        pacman -S --needed --noconfirm go
+        log "Compilando e instalando '$choice'..."
+        pushd "$BUILD_DIR" > /dev/null
+        if [[ "$choice" == "paru" ]]; then
+            pacman -S --needed --noconfirm rustup &> /dev/null
+            sudo -u "$SUDO_USER_NAME" rustup override set stable
+            sudo -u "$SUDO_USER_NAME" rustup update stable
+        elif [[ "$choice" == "yay" ]]; then
+            pacman -S --needed --noconfirm go &> /dev/null
+        fi
+        
+        sudo -u "$SUDO_USER_NAME" makepkg -si --noconfirm
+        popd > /dev/null
+        rm -rf "$BUILD_DIR"
+        
+        AUR_HELPER="$choice"
+        log "'$choice' instalado correctamente."
     fi
-    
-    sudo -u "$SUDO_USER_NAME" makepkg -si --noconfirm
-    popd > /dev/null
-    rm -rf "$BUILD_DIR"
-    
-    AUR_HELPER="$choice"
-    log "'$choice' instalado correctamente."
 }
 
 install_aur_packages() {
@@ -155,9 +184,9 @@ install_aur_packages() {
         return
     fi
 
-    log "Paquetes a instalar: ${packages_to_install[*]}"
+    log "Se instalarán ${#packages_to_install[@]} paquetes de AUR."
     BLA::start_loading_animation "BLA_braille_whitespace"
-    sudo -u "$SUDO_USER_NAME" "$AUR_HELPER" -S --noconfirm --needed "${packages_to_install[@]}"
+    sudo -u "$SUDO_USER_NAME" "$AUR_HELPER" -S --noconfirm --needed "${packages_to_install[@]}" &> /dev/null
     BLA::stop_loading_animation
     log "Instalación de paquetes de AUR completada."
 }
@@ -176,9 +205,9 @@ install_flatpak_packages() {
         return
     fi
 
-    log "Paquetes a instalar: ${packages_to_install[*]}"
+    log "Se instalarán ${#packages_to_install[@]} paquetes de Flatpak."
     BLA::start_loading_animation "BLA_braille_whitespace"
-    flatpak install flathub --noninteractive --assumeyes "${packages_to_install[@]}"
+    flatpak install flathub --noninteractive --assumeyes "${packages_to_install[@]}" &> /dev/null
     BLA::stop_loading_animation
     log "Instalación de paquetes de Flatpak completada."
 }
@@ -197,7 +226,6 @@ install_grub_theme() {
     fi
     
     chmod +x "$GRUB_SCRIPT_PATH"
-    # El script install-grub-theme.sh es interactivo por sí mismo
     "$GRUB_SCRIPT_PATH"
 }
 
@@ -210,15 +238,13 @@ install_sddm_theme() {
     fi
     
     chmod +x "$SDDM_SCRIPT_PATH"
-    # El script install-sddm-theme.sh es interactivo por sí mismo
     "$SDDM_SCRIPT_PATH"
 }
 
 copy_dotfiles() {
-    log "Instalando dotfiles con enlaces simbólicos கிலோ"
+    log "Instalando dotfiles con enlaces simbólicos..."
     local SUDO_USER_NAME=${SUDO_USER:?SUDO_USER no está definido.}
     local HOME_DIR="/home/$SUDO_USER_NAME"
-    # La carpeta 'config' del repositorio contiene las configuraciones a enlazar
     local SOURCE_CONFIG_DIR="$SCRIPT_DIR/config" 
     local TARGET_CONFIG_DIR="$HOME_DIR/.config"
     local BACKUP_DIR="$HOME_DIR/.config-backup-$(date +%Y%m%d-%H%M%S)"
@@ -232,7 +258,6 @@ copy_dotfiles() {
     sudo -u "$SUDO_USER_NAME" mkdir -p "$BACKUP_DIR"
     sudo -u "$SUDO_USER_NAME" mkdir -p "$TARGET_CONFIG_DIR"
 
-    # Iterar sobre los items en la carpeta 'config' del repo
     for item in "$SOURCE_CONFIG_DIR"/*; do
         local item_name=$(basename "$item")
         local source_path="$item"
@@ -240,14 +265,12 @@ copy_dotfiles() {
 
         log "Procesando '$item_name'..."
 
-        # Si el archivo/directorio de destino ya existe en ~/.config, moverlo al backup
         if [ -e "$dest_path" ] || [ -L "$dest_path" ]; then
             log "  -> Configuración existente encontrada. Moviendo a la copia de seguridad."
             sudo -u "$SUDO_USER_NAME" mv "$dest_path" "$BACKUP_DIR/"
         fi
 
         log "  -> Creando enlace simbólico: $dest_path -> $source_path"
-        # Usamos -T para tratar el destino como un archivo normal y no como un directorio
         sudo -u "$SUDO_USER_NAME" ln -s "$source_path" "$dest_path"
     done
     
@@ -255,28 +278,15 @@ copy_dotfiles() {
 }
 
 configure_services() {
-    log "Habilitando servicios del sistema கிலோ"
+    log "Habilitando servicios del sistema..."
     
     local services_to_enable=("sddm" "bluetooth" "NetworkManager")
     for service in "${services_to_enable[@]}"; do
         log "  -> Habilitando '$service'..."
-        systemctl enable "$service"
+        systemctl enable "$service" &> /dev/null
     done
 
     log "Servicios habilitados."
-}
-
-# --- Verificaciones Iniciales ---
-run_pre_checks() {
-    log "Iniciando verificaciones del sistema..."
-    if [[ "$EUID" -ne 0 ]]; then
-      error "Este script necesita privilegios de root. Por favor, ejecútalo con 'sudo'."
-    fi
-
-    if ! ping -c 1 -W 1 8.8.8.8 &> /dev/null; then
-        error "No se detectó conexión a internet. Conéctate a una red para continuar."
-    fi
-    log "Verificaciones completadas."
 }
 
 # --- Lógica Principal de Ejecución ---
